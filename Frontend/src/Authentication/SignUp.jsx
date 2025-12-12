@@ -5,46 +5,51 @@ import Background3D from "../Components/Background3D";
 
 const SignUp = () => {
     const [formData, setFormData] = useState({
-        name: "",
+        firstName: "",
+        lastName: "",
+        dob: "",
         email: "",
         mobile: "",
         password: "",
-        cpassword: ""
+        confirmPassword: ""
     });
+    const [errors, setErrors] = useState({});
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
 
     const handleSignUp = async () => {
-        // Validation checks
-        if (!formData.name || !formData.email || !formData.mobile || !formData.password || !formData.cpassword) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'Please fill in all fields!',
-                background: '#1f2937',
-                color: '#fff',
-                confirmButtonColor: '#ef4444'
-            });
-            return;
+        // Clear previous errors
+        setErrors({});
+
+        // Client-side validation
+        const newErrors = {};
+        
+        if (!formData.firstName) newErrors.firstName = "First name is required";
+        if (!formData.lastName) newErrors.lastName = "Last name is required";
+        if (!formData.dob) newErrors.dob = "Date of birth is required";
+        if (!formData.email) newErrors.email = "Email is required";
+        if (!formData.mobile) newErrors.mobile = "Mobile number is required";
+        if (!formData.password) newErrors.password = "Password is required";
+        if (!formData.confirmPassword) newErrors.confirmPassword = "Please confirm your password";
+
+        if (formData.password !== formData.confirmPassword) {
+            newErrors.confirmPassword = "Passwords do not match";
         }
 
-        if (formData.password !== formData.cpassword) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'Passwords do not match!',
-                background: '#1f2937',
-                color: '#fff',
-                confirmButtonColor: '#ef4444'
-            });
-            return;
+        if (formData.mobile && (formData.mobile.length !== 10 || !/^\d+$/.test(formData.mobile))) {
+            newErrors.mobile = "Please enter a valid 10-digit mobile number";
         }
 
-        if (formData.mobile.length !== 10 || !/^\d+$/.test(formData.mobile)) {
+        if (formData.password && formData.password.length < 6) {
+            newErrors.password = "Password must be at least 6 characters";
+        }
+
+        if (Object.keys(newErrors).length > 0) {
+            setErrors(newErrors);
             Swal.fire({
                 icon: 'error',
-                title: 'Oops...',
-                text: 'Please enter a valid 10-digit mobile number!',
+                title: 'Validation Error',
+                text: Object.values(newErrors)[0],
                 background: '#1f2937',
                 color: '#fff',
                 confirmButtonColor: '#ef4444'
@@ -60,34 +65,34 @@ const SignUp = () => {
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({
-                    name: formData.name,
-                    email: formData.email,
-                    mobile: formData.mobile,
-                    password: formData.password
-                }),
+                body: JSON.stringify(formData),
             });
 
-            if (res.ok) {
+            const data = await res.json();
+
+            if (data.success) {
                 Swal.fire({
                     icon: 'success',
                     title: 'Success!',
-                    text: 'Account created successfully!',
+                    text: data.message || 'Account created successfully!',
                     background: '#1f2937',
                     color: '#fff',
                     confirmButtonColor: '#4f46e5'
                 });
                 navigate("/login");
             } else {
-                let errorData = await res.json();
-                throw new Error(errorData.message || "Failed to create account");
+                throw new Error(data.message || "Failed to create account");
             }
-        } catch (e) {
-            console.error(e);
+        } catch (err) {
+            console.error('Signup error:', err);
+            
+            // Display specific error message from backend
+            const errorMessage = err.message || 'Something went wrong. Please try again later.';
+            
             Swal.fire({
                 icon: 'error',
-                title: 'Oops...',
-                text: e.message || 'Something went wrong. Please try again later.',
+                title: 'Sign Up Failed',
+                text: errorMessage,
                 background: '#1f2937',
                 color: '#fff',
                 confirmButtonColor: '#ef4444'
@@ -108,7 +113,7 @@ const SignUp = () => {
         <div className="min-h-screen relative">
             <Background3D />
             <div className="relative z-10 min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8">
-                <div className="max-w-md w-full space-y-8 bg-gray-900/60 backdrop-blur-md border border-gray-700/50 rounded-3xl p-8 md:p-12 shadow-2xl">
+                <div className="max-w-xl w-full space-y-8 bg-gray-900/60 backdrop-blur-md border border-gray-700/50 rounded-3xl p-8 md:p-12 shadow-2xl">
                     <div>
                         <h2 className="mt-6 text-center text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">
                             Create your account
@@ -120,24 +125,66 @@ const SignUp = () => {
                     <div className="mt-8 space-y-6" onKeyPress={handleKeyPress}>
                         <div className="rounded-md shadow-sm space-y-4">
                             <div className="relative group">
-                                <label htmlFor="full-name" className="sr-only">Full Name</label>
+                                <label htmlFor="first-name" className="sr-only">First Name</label>
                                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                     <svg className="h-5 w-5 text-gray-400 group-focus-within:text-indigo-500 transition-colors duration-200" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                                         <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
                                     </svg>
                                 </div>
                                 <input
-                                    id="full-name"
-                                    name="fullName"
+                                    id="first-name"
+                                    name="firstName"
                                     type="text"
                                     required
-                                    value={formData.name}
-                                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                    className="appearance-none rounded-lg block w-full pl-10 px-5 py-3 bg-gray-700/50 border border-gray-600 placeholder-gray-400 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent focus:bg-gray-700 transition-all duration-200 sm:text-lg"
-                                    placeholder="Full Name"
-                                    aria-describedby="name-help"
+                                    value={formData.firstName}
+                                    onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
+                                    className={`appearance-none rounded-lg block w-full pl-10 px-5 py-3 bg-gray-700/50 border ${errors.firstName ? 'border-red-500' : 'border-gray-600'} placeholder-gray-400 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent focus:bg-gray-700 transition-all duration-200 sm:text-lg`}
+                                    placeholder="First Name"
+                                    aria-describedby="first-name-help"
                                 />
-                                <div id="name-help" className="sr-only">Enter your full name</div>
+                                {errors.firstName && <p className="text-red-400 text-xs mt-1">{errors.firstName}</p>}
+                            </div>
+
+                            <div className="relative group">
+                                <label htmlFor="last-name" className="sr-only">Last Name</label>
+                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <svg className="h-5 w-5 text-gray-400 group-focus-within:text-indigo-500 transition-colors duration-200" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                        <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
+                                    </svg>
+                                </div>
+                                <input
+                                    id="last-name"
+                                    name="lastName"
+                                    type="text"
+                                    required
+                                    value={formData.lastName}
+                                    onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
+                                    className={`appearance-none rounded-lg block w-full pl-10 px-5 py-3 bg-gray-700/50 border ${errors.lastName ? 'border-red-500' : 'border-gray-600'} placeholder-gray-400 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent focus:bg-gray-700 transition-all duration-200 sm:text-lg`}
+                                    placeholder="Last Name"
+                                    aria-describedby="last-name-help"
+                                />
+                                {errors.lastName && <p className="text-red-400 text-xs mt-1">{errors.lastName}</p>}
+                            </div>
+
+                            <div className="relative group">
+                                <label htmlFor="dob" className="sr-only">Date of Birth</label>
+                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <svg className="h-5 w-5 text-gray-400 group-focus-within:text-indigo-500 transition-colors duration-200" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                        <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
+                                    </svg>
+                                </div>
+                                <input
+                                    id="dob"
+                                    name="dob"
+                                    type="date"
+                                    required
+                                    value={formData.dob}
+                                    onChange={(e) => setFormData({ ...formData, dob: e.target.value })}
+                                    className={`appearance-none rounded-lg block w-full pl-10 px-5 py-3 bg-gray-700/50 border ${errors.dob ? 'border-red-500' : 'border-gray-600'} placeholder-gray-400 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent focus:bg-gray-700 transition-all duration-200 sm:text-lg`}
+                                    placeholder="Date of Birth"
+                                    aria-describedby="dob-help"
+                                />
+                                {errors.dob && <p className="text-red-400 text-xs mt-1">{errors.dob}</p>}
                             </div>
 
                             <div className="relative group">
@@ -156,11 +203,11 @@ const SignUp = () => {
                                     required
                                     value={formData.email}
                                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                    className="appearance-none rounded-lg block w-full pl-10 px-5 py-3 bg-gray-700/50 border border-gray-600 placeholder-gray-400 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent focus:bg-gray-700 transition-all duration-200 sm:text-lg"
+                                    className={`appearance-none rounded-lg block w-full pl-10 px-5 py-3 bg-gray-700/50 border ${errors.email ? 'border-red-500' : 'border-gray-600'} placeholder-gray-400 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent focus:bg-gray-700 transition-all duration-200 sm:text-lg`}
                                     placeholder="Email address"
                                     aria-describedby="email-help"
                                 />
-                                <div id="email-help" className="sr-only">Enter your email address</div>
+                                {errors.email && <p className="text-red-400 text-xs mt-1">{errors.email}</p>}
                             </div>
 
                             <div className="relative group">
@@ -178,11 +225,11 @@ const SignUp = () => {
                                     required
                                     value={formData.mobile}
                                     onChange={(e) => setFormData({ ...formData, mobile: e.target.value })}
-                                    className="appearance-none rounded-lg block w-full pl-10 px-5 py-3 bg-gray-700/50 border border-gray-600 placeholder-gray-400 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent focus:bg-gray-700 transition-all duration-200 sm:text-lg"
+                                    className={`appearance-none rounded-lg block w-full pl-10 px-5 py-3 bg-gray-700/50 border ${errors.mobile ? 'border-red-500' : 'border-gray-600'} placeholder-gray-400 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent focus:bg-gray-700 transition-all duration-200 sm:text-lg`}
                                     placeholder="Mobile Number"
                                     aria-describedby="mobile-help"
                                 />
-                                <div id="mobile-help" className="sr-only">Enter your 10-digit mobile number</div>
+                                {errors.mobile && <p className="text-red-400 text-xs mt-1">{errors.mobile}</p>}
                             </div>
 
                             <div className="relative group">
@@ -200,11 +247,11 @@ const SignUp = () => {
                                     autoComplete="new-password"
                                     required
                                     onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                                    className="appearance-none rounded-lg block w-full pl-10 px-5 py-3 bg-gray-700/50 border border-gray-600 placeholder-gray-400 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent focus:bg-gray-700 transition-all duration-200 sm:text-lg"
-                                    placeholder="Password"
+                                    className={`appearance-none rounded-lg block w-full pl-10 px-5 py-3 bg-gray-700/50 border ${errors.password ? 'border-red-500' : 'border-gray-600'} placeholder-gray-400 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent focus:bg-gray-700 transition-all duration-200 sm:text-lg`}
+                                    placeholder="Password (min 6 characters)"
                                     aria-describedby="password-help"
                                 />
-                                <div id="password-help" className="sr-only">Enter your password</div>
+                                {errors.password && <p className="text-red-400 text-xs mt-1">{errors.password}</p>}
                             </div>
 
                             <div className="relative group">
@@ -218,15 +265,15 @@ const SignUp = () => {
                                     id="confirm-password"
                                     name="confirmPassword"
                                     type="password"
-                                    value={formData.cpassword}
+                                    value={formData.confirmPassword}
                                     autoComplete="new-password"
                                     required
-                                    onChange={(e) => setFormData({ ...formData, cpassword: e.target.value })}
-                                    className="appearance-none rounded-lg block w-full pl-10 px-5 py-3 bg-gray-700/50 border border-gray-600 placeholder-gray-400 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent focus:bg-gray-700 transition-all duration-200 sm:text-lg"
+                                    onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+                                    className={`appearance-none rounded-lg block w-full pl-10 px-5 py-3 bg-gray-700/50 border ${errors.confirmPassword ? 'border-red-500' : 'border-gray-600'} placeholder-gray-400 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent focus:bg-gray-700 transition-all duration-200 sm:text-lg`}
                                     placeholder="Confirm Password"
                                     aria-describedby="confirm-password-help"
                                 />
-                                <div id="confirm-password-help" className="sr-only">Confirm your password</div>
+                                {errors.confirmPassword && <p className="text-red-400 text-xs mt-1">{errors.confirmPassword}</p>}
                             </div>
                         </div>
 

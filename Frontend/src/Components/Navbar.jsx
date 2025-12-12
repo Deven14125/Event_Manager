@@ -3,30 +3,15 @@ import { Link, useNavigate, Outlet } from "react-router-dom"; // React Router fo
 import Swal from 'sweetalert2'; // SweetAlert for handling alert popups
 import Background3D from './Background3D'; // Import the 3D Background
 import Footer from './Footer'; // Import Footer
+import { useUser } from '../context/UserContext'; // Import UserContext
 
 const Navbar = () => {
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false); // New state to toggle dropdown
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // State for mobile menu
     const dropdownRef = useRef(null); // Reference to dropdown menu
     const navigate = useNavigate();
-
-    // Check if the user is logged in (via token in localStorage) when the component mounts
-    useEffect(() => {
-        const checkLoginStatus = () => {
-            const token = localStorage.getItem('authToken');
-            setIsLoggedIn(!!token);
-        };
-
-        checkLoginStatus();
-
-        // Listen for the custom auth-change event
-        window.addEventListener('auth-change', checkLoginStatus);
-
-        return () => {
-            window.removeEventListener('auth-change', checkLoginStatus);
-        };
-    }, []);
+    const { isAuthenticated, logout: logoutUser, user } = useUser(); // Use UserContext
+    const isLoggedIn = isAuthenticated; // For backward compatibility
 
     // Handle the logout action with a confirmation popup
     const handleLogout = () => {
@@ -38,14 +23,21 @@ const Navbar = () => {
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
             confirmButtonText: 'Yes, log out!',
-            cancelButtonText: 'Cancel'
+            cancelButtonText: 'Cancel',
+            background: '#1f2937',
+            color: '#fff'
         }).then((result) => {
             if (result.isConfirmed) {
-                localStorage.removeItem('authToken'); // Remove token on logout
-                setIsLoggedIn(false); // Update login state
-                window.dispatchEvent(new Event('auth-change')); // Notify other components
+                logoutUser(); // Use logout function from UserContext
                 navigate('/login'); // Redirect to login page
-                Swal.fire('Logged out!', 'You have successfully logged out.', 'success');
+                Swal.fire({
+                    title: 'Logged out!',
+                    text: 'You have successfully logged out.',
+                    icon: 'success',
+                    background: '#1f2937',
+                    color: '#fff',
+                    confirmButtonColor: '#4f46e5'
+                });
             }
         });
     };

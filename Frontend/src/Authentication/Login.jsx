@@ -2,12 +2,14 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Swal from 'sweetalert2';
 import Background3D from "../Components/Background3D";
+import { useUser } from "../context/UserContext";
 
 const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
+    const { login } = useUser();
 
     const loginBtn = async () => {
         if (!email || !password) {
@@ -33,29 +35,41 @@ const Login = () => {
                 body: JSON.stringify({ email, password }),
             });
 
-            if (res.ok) {
-                let data = await res.json();
-                localStorage.setItem("authToken", data.token);
-                window.dispatchEvent(new Event('auth-change'));
-                navigate("/home");
+            const data = await res.json();
+
+            if (data.success) {
+                // Use the login function from UserContext
+                login(data.user, data.token);
+                
+                // Show success message
                 Swal.fire({
                     icon: 'success',
-                    title: 'Success!',
-                    text: 'Login successful!',
+                    title: 'Welcome Back!',
+                    text: `Login successful! Welcome, ${data.user.name}`,
                     background: '#1f2937',
                     color: '#fff',
-                    confirmButtonColor: '#4f46e5'
+                    confirmButtonColor: '#4f46e5',
+                    timer: 2000,
+                    showConfirmButton: false
                 });
+                
+                // Redirect to home page
+                setTimeout(() => {
+                    navigate("/home");
+                }, 500);
             } else {
-                let errorData = await res.json();
-                throw new Error(errorData.message || "Invalid credentials");
+                throw new Error(data.message || "Invalid credentials");
             }
-        } catch (e) {
-            console.error(e);
+        } catch (err) {
+            console.error('Login error:', err);
+            
+            // Display specific error message from backend
+            const errorMessage = err.message || 'Something went wrong. Please try again later.';
+            
             Swal.fire({
                 icon: 'error',
-                title: 'Oops...',
-                text: e.message || 'Something went wrong. Please try again later.',
+                title: 'Login Failed',
+                text: errorMessage,
                 background: '#1f2937',
                 color: '#fff',
                 confirmButtonColor: '#ef4444'
