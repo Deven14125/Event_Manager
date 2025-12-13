@@ -1143,13 +1143,13 @@ SOFTWARE.
 ### Project Maintainers
 
 **Lead Developer**: Your Name
-- GitHub: [@yourusername](https://github.com/Deven14125)
+- GitHub: [@Deven14125](https://github.com/Deven14125)
 - Email: deven81281256@gmail.com
-- LinkedIn: [Your LinkedIn]([(https://www.linkedin.com/in/deven-machchhar-b13287286/)])
+- LinkedIn: [(https://www.linkedin.com/in/deven-machchhar-b13287286/)]((https://www.linkedin.com/in/deven-machchhar-b13287286/))
 
 ### Project Links
 
-- **Repository**: [https://github.com/yourusername/event-manager](https://github.com/yourusername/event-manager)
+- **Repository**: [https://github.com/Deven14125/event-manager](https://github.com/yourusername/event-manager)
 - **Live Demo**: [https://event-manager.netlify.app](https://event-manager.netlify.app)
 - **Documentation**: [https://docs.event-manager.com](https://docs.event-manager.com)
 - **Issue Tracker**: [GitHub Issues](https://github.com/Deven14125/event-manager/issues)
