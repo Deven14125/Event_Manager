@@ -1,151 +1,150 @@
-import { useState, useEffect, useRef } from "react"; // React hooks for state and side effects
-import { Link, useNavigate, Outlet } from "react-router-dom"; // React Router for navigation
-import Swal from 'sweetalert2'; // SweetAlert for handling alert popups
-import Background3D from './Background3D'; // Import the 3D Background
-import Footer from './Footer'; // Import Footer
+import { useState, useEffect, useRef } from "react";
+import { Link, useNavigate, Outlet } from "react-router-dom";
+import Swal from "sweetalert2";
+import Background3D from "./Background3D";
+import Footer from "./Footer";
+import ThemeToggle from "./ThemeToggle";
 
 const Navbar = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [isDropdownOpen, setIsDropdownOpen] = useState(false); // New state to toggle dropdown
-    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // State for mobile menu
-    const dropdownRef = useRef(null); // Reference to dropdown menu
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const dropdownRef = useRef(null);
     const navigate = useNavigate();
 
-    // Check if the user is logged in (via token in localStorage) when the component mounts
+    // ---------------------- CHECK LOGIN STATUS ----------------------
     useEffect(() => {
         const checkLoginStatus = () => {
-            const token = localStorage.getItem('authToken');
+            const token = localStorage.getItem("authToken");
             setIsLoggedIn(!!token);
         };
 
         checkLoginStatus();
-
-        // Listen for the custom auth-change event
-        window.addEventListener('auth-change', checkLoginStatus);
-
-        return () => {
-            window.removeEventListener('auth-change', checkLoginStatus);
-        };
+        window.addEventListener("auth-change", checkLoginStatus);
+        return () => window.removeEventListener("auth-change", checkLoginStatus);
     }, []);
 
-    // Handle the logout action with a confirmation popup
+    // --------------------------- LOGOUT -----------------------------
     const handleLogout = () => {
         Swal.fire({
-            title: 'Are you sure?',
-            text: 'Do you really want to log out?',
-            icon: 'warning',
+            title: "Are you sure?",
+            text: "Do you want to log out?",
+            icon: "warning",
             showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, log out!',
-            cancelButtonText: 'Cancel'
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, log out!",
         }).then((result) => {
             if (result.isConfirmed) {
-                localStorage.removeItem('authToken'); // Remove token on logout
-                setIsLoggedIn(false); // Update login state
-                window.dispatchEvent(new Event('auth-change')); // Notify other components
-                navigate('/login'); // Redirect to login page
-                Swal.fire('Logged out!', 'You have successfully logged out.', 'success');
+                localStorage.removeItem("authToken");
+                setIsLoggedIn(false);
+                window.dispatchEvent(new Event("auth-change"));
+                navigate("/login");
+
+                Swal.fire("Logged out!", "You have been logged out.", "success");
             }
         });
     };
 
-    // Close the dropdown when clicking outside
+    // ------------------ CLOSE DROPDOWN ON OUTSIDE CLICK ------------------
     useEffect(() => {
-        const handleClickOutside = (event) => {
-            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-                setIsDropdownOpen(false); // Close dropdown if clicked outside
+        const handleClickOutside = (e) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+                setIsDropdownOpen(false);
             }
         };
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
-    }, [dropdownRef]);
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
 
-    // Handle keyboard navigation for dropdown
+    // ESC key closes dropdown
     const handleDropdownKeyDown = (e) => {
-        if (e.key === 'Escape') {
-            setIsDropdownOpen(false);
-        }
+        if (e.key === "Escape") setIsDropdownOpen(false);
     };
 
     return (
         <div className="min-h-screen relative">
             <Background3D />
-            <nav className="w-full bg-gray-900/80 backdrop-blur-md text-white py-4 shadow-lg sticky top-0 z-50" role="navigation" aria-label="Main navigation">
+
+            {/* ---------------- NAVBAR ---------------- */}
+            <nav className="w-full bg-gray-900/80 backdrop-blur-md text-white py-4 shadow-lg sticky top-0 z-50">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between items-center">
-                        {/* Logo and Title */}
-                        <Link to="/" className="text-white text-2xl md:text-3xl font-extrabold" aria-label="EventBooking Home">
+
+                        {/* LOGO */}
+                        <Link to="/" className="text-white text-2xl md:text-3xl font-extrabold">
                             EventBooking
                         </Link>
 
-                        {/* Mobile Menu Button */}
-                        <div className="md:hidden">
-                            <button
-                                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                                className="text-white focus:outline-none focus:ring-2 focus:ring-white"
-                                aria-expanded={isMobileMenuOpen}
-                                aria-controls="mobile-menu"
-                                aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
-                            >
-                                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={isMobileMenuOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"}></path>
-                                </svg>
-                            </button>
-                        </div>
+                        {/* MOBILE MENU BUTTON */}
+                        <button
+                            className="md:hidden text-white"
+                            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                        >
+                            <svg className="w-8 h-8" fill="none" stroke="currentColor">
+                                <path
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d={
+                                        isMobileMenuOpen
+                                            ? "M6 18L18 6M6 6l12 12"
+                                            : "M4 6h16M4 12h16M4 18h16"
+                                    }
+                                />
+                            </svg>
+                        </button>
 
-                        {/* Desktop Navigation Links */}
+                        {/* ---------------- DESKTOP LINKS ---------------- */}
                         <div className="hidden md:flex space-x-6 items-center">
-                            <Link to="/eventDemo" className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium focus:outline-none focus:ring-2 focus:ring-white">Event Demo</Link>
-                            {isLoggedIn ? (
-                                <>
-                                    <Link to="/home" className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium focus:outline-none focus:ring-2 focus:ring-white">Home</Link>
-                                    <Link to="/eventCard" className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium focus:outline-none focus:ring-2 focus:ring-white">All Events</Link>
-                                    <Link to="/eventForm" className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium focus:outline-none focus:ring-2 focus:ring-white">Create Event</Link>
-                                    <Link to="/myBookings" className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium focus:outline-none focus:ring-2 focus:ring-white">My Bookings</Link>
-                                </>
-                            ) : null}
-                            <Link to="/about" className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium focus:outline-none focus:ring-2 focus:ring-white">About</Link>
-                            <Link to="/contact" className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium focus:outline-none focus:ring-2 focus:ring-white">Contact</Link>
-                        </div>
+                            <Link to="/eventDemo" className="nav-link">Event Demo</Link>
 
-                        {/* Desktop Profile/Login */}
-                        <div className="hidden md:block">
+                            {isLoggedIn && (
+                                <>
+                                    <Link to="/home" className="nav-link">Home</Link>
+                                    <Link to="/eventCard" className="nav-link">All Events</Link>
+                                    <Link to="/eventForm" className="nav-link">Create Event</Link>
+                                    <Link to="/myBookings" className="nav-link">My Bookings</Link>
+                                </>
+                            )}
+
+                            <Link to="/about" className="nav-link">About</Link>
+                            <Link to="/contact" className="nav-link">Contact</Link>
+
+                            {/* THEME SWITCH BUTTON */}
+                            <ThemeToggle />
+
+                            {/* PROFILE / LOGIN BUTTONS */}
                             {isLoggedIn ? (
-                                <div className="relative" ref={dropdownRef}>
+                                <div ref={dropdownRef} className="relative">
                                     <button
                                         onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                                        className="flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-white"
-                                        aria-haspopup="true"
-                                        aria-expanded={isDropdownOpen}
                                         onKeyDown={handleDropdownKeyDown}
-                                        aria-label="User profile menu"
+                                        className="focus:outline-none"
                                     >
-                                        <img 
-                                            src="https://randomuser.me/api/portraits/men/32.jpg" 
-                                            alt="User Profile" 
-                                            className="h-10 w-10 rounded-full border-2 border-indigo-500 hover:border-indigo-400 transition-colors"
+                                        <img
+                                            src="https://randomuser.me/api/portraits/men/32.jpg"
+                                            className="h-10 w-10 rounded-full border-2 border-indigo-500 hover:border-indigo-400"
+                                            alt="user"
                                         />
                                     </button>
+
                                     {isDropdownOpen && (
-                                        <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-20" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button">
+                                        <div className="dropdown-menu">
                                             <Link
                                                 to="/profile"
-                                                className="block px-4 py-2 text-gray-800 hover:bg-gray-200 focus:outline-none focus:bg-gray-200 focus:ring-2 focus:ring-indigo-500"
-                                                onClick={() => setIsDropdownOpen(false)} // Close dropdown on click
-                                                role="menuitem"
+                                                className="dropdown-item"
+                                                onClick={() => setIsDropdownOpen(false)}
                                             >
                                                 My Profile
                                             </Link>
+
                                             <button
                                                 onClick={() => {
                                                     handleLogout();
-                                                    setIsDropdownOpen(false); // Close dropdown on logout
+                                                    setIsDropdownOpen(false);
                                                 }}
-                                                className="block w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-200 focus:outline-none focus:bg-gray-200 focus:ring-2 focus:ring-indigo-500"
-                                                role="menuitem"
+                                                className="dropdown-item w-full text-left"
                                             >
                                                 Logout
                                             </button>
@@ -153,48 +152,45 @@ const Navbar = () => {
                                     )}
                                 </div>
                             ) : (
-                                <div className="flex space-x-6">
-                                    <button onClick={() => navigate('/login')} className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-md text-lg focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-900">
-                                        Login
-                                    </button>
-                                    <button onClick={() => navigate('/signUp')} className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-md text-lg focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-900">
-                                        SignUp
-                                    </button>
+                                <div className="flex space-x-4">
+                                    <button onClick={() => navigate("/login")} className="btn-primary">Login</button>
+                                    <button onClick={() => navigate("/signUp")} className="btn-green">SignUp</button>
                                 </div>
                             )}
                         </div>
                     </div>
                 </div>
 
-                {/* Mobile Menu */}
+                {/* ---------------- MOBILE MENU ---------------- */}
                 {isMobileMenuOpen && (
-                    <div id="mobile-menu" className="md:hidden bg-gray-900 px-2 pt-2 pb-3 space-y-1 sm:px-3" role="menubar">
-                        <Link to="/about" onClick={() => setIsMobileMenuOpen(false)} className="block text-gray-300 hover:text-white px-3 py-2 rounded-md text-base font-medium focus:outline-none focus:ring-2 focus:ring-white" role="menuitem">About</Link>
-                        <Link to="/contact" onClick={() => setIsMobileMenuOpen(false)} className="block text-gray-300 hover:text-white px-3 py-2 rounded-md text-base font-medium focus:outline-none focus:ring-2 focus:ring-white" role="menuitem">Contact</Link>
-                        <Link to="/eventDemo" onClick={() => setIsMobileMenuOpen(false)} className="block text-gray-300 hover:text-white px-3 py-2 rounded-md text-base font-medium focus:outline-none focus:ring-2 focus:ring-white" role="menuitem">Event Demo</Link>
+                    <div className="md:hidden bg-gray-900 px-2 py-3 space-y-2">
+                        <Link to="/about" className="mobile-link" onClick={() => setIsMobileMenuOpen(false)}>About</Link>
+                        <Link to="/contact" className="mobile-link" onClick={() => setIsMobileMenuOpen(false)}>Contact</Link>
+                        <Link to="/eventDemo" className="mobile-link" onClick={() => setIsMobileMenuOpen(false)}>Event Demo</Link>
+
                         {isLoggedIn ? (
                             <>
-                                <Link to="/home" onClick={() => setIsMobileMenuOpen(false)} className="block text-gray-300 hover:text-white px-3 py-2 rounded-md text-base font-medium focus:outline-none focus:ring-2 focus:ring-white" role="menuitem">Home</Link>
-                                <Link to="/eventCard" onClick={() => setIsMobileMenuOpen(false)} className="block text-gray-300 hover:text-white px-3 py-2 rounded-md text-base font-medium focus:outline-none focus:ring-2 focus:ring-white" role="menuitem">All Events</Link>
-                                <Link to="/eventForm" onClick={() => setIsMobileMenuOpen(false)} className="block text-gray-300 hover:text-white px-3 py-2 rounded-md text-base font-medium focus:outline-none focus:ring-2 focus:ring-white" role="menuitem">Create Event</Link>
-                                <Link to="/myBookings" onClick={() => setIsMobileMenuOpen(false)} className="block text-gray-300 hover:text-white px-3 py-2 rounded-md text-base font-medium focus:outline-none focus:ring-2 focus:ring-white" role="menuitem">My Bookings</Link>
+                                <Link to="/home" className="mobile-link" onClick={() => setIsMobileMenuOpen(false)}>Home</Link>
+                                <Link to="/eventCard" className="mobile-link" onClick={() => setIsMobileMenuOpen(false)}>All Events</Link>
+                                <Link to="/eventForm" className="mobile-link" onClick={() => setIsMobileMenuOpen(false)}>Create Event</Link>
+                                <Link to="/myBookings" className="mobile-link" onClick={() => setIsMobileMenuOpen(false)}>My Bookings</Link>
+
                                 <button
                                     onClick={() => {
                                         handleLogout();
                                         setIsMobileMenuOpen(false);
                                     }}
-                                    className="block w-full text-left text-gray-300 hover:text-white px-3 py-2 rounded-md text-base font-medium focus:outline-none focus:ring-2 focus:ring-white"
-                                    role="menuitem"
+                                    className="mobile-link text-left"
                                 >
                                     Logout
                                 </button>
                             </>
                         ) : (
-                            <div className="flex flex-col space-y-2 mt-4">
-                                <button onClick={() => { navigate('/login'); setIsMobileMenuOpen(false); }} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-base font-medium focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-900">
+                            <div className="flex flex-col space-y-2 mt-2">
+                                <button onClick={() => { navigate("/login"); setIsMobileMenuOpen(false); }} className="btn-primary">
                                     Login
                                 </button>
-                                <button onClick={() => { navigate('/signUp'); setIsMobileMenuOpen(false); }} className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md text-base font-medium focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-900">
+                                <button onClick={() => { navigate("/signUp"); setIsMobileMenuOpen(false); }} className="btn-green">
                                     SignUp
                                 </button>
                             </div>
@@ -203,11 +199,11 @@ const Navbar = () => {
                 )}
             </nav>
 
-            {/* Outlet for rendering child routes */}
+            {/* RENDER CHILD ROUTES */}
             <div className="relative z-10">
                 <Outlet />
             </div>
-            
+
             <Footer />
         </div>
     );
