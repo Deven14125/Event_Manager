@@ -11,7 +11,7 @@
 [![Express.js](https://img.shields.io/badge/Express.js-4.x-000000?logo=express)](https://expressjs.com/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.x-38B2AC?logo=tailwind-css)](https://tailwindcss.com/)
 
-[Live Demo](#) • [Report Bug](https://github.com/yourusername/event-manager/issues) • [Request Feature](https://github.com/yourusername/event-manager/issues)
+[Live Demo](#) • [Report Bug](https://github.com/Deven14125/event-manager/issues) • [Request Feature](https://github.com/Deven14125/event-manager/issues)
 
 </div>
 
