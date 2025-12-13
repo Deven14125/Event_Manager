@@ -1,6 +1,24 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
+import { 
+  Calendar, 
+  Ticket, 
+  Users, 
+  Share2,
+  Download,
+  Edit,
+  Trash2,
+  Sparkles,
+  Star,
+  Building,
+  User,
+  ArrowRight,
+  QrCode,
+  Heart,
+  Bookmark,
+  Send,
+  Eye
+} from 'lucide-react';
 
 const EventDemo = () => {
     const sampleEvent = {
@@ -14,122 +32,341 @@ const EventDemo = () => {
         venueAddress: "500 Innovation Way, San Jose, CA",
         organizerName: "TechWorld Inc.",
         ticketPrice: "299",
-        ticketType: "VIP Access"
+        ticketType: "VIP Access",
+        maxAttendees: 500,
+        registeredAttendees: 387,
+        rating: 4.8,
+        reviews: 124,
+        featured: true,
+        tags: ["AI", "Innovation", "Networking", "Startups"]
     };
 
     const handleDemoAction = (action) => {
         Swal.fire({
-            title: 'Demo Feature',
-            text: `This is how the "${action}" feature works!`,
+            title: 'Demo Feature Activated',
+            html: `
+                <div class="text-center">
+                    <div class="mb-4 text-5xl">🎯</div>
+                    <p class="text-white mb-2">"${action}" feature preview</p>
+                    <p class="text-gray-300 text-sm">This demonstrates how the action works in the real application.</p>
+                </div>
+            `,
             icon: 'info',
             background: '#1f2937',
             color: '#fff',
-            confirmButtonColor: '#6366f1'
+            confirmButtonColor: '#3b82f6',
+            confirmButtonText: 'Got it!',
+            customClass: {
+                popup: 'rounded-2xl border border-blue-500/30',
+                icon: 'border-0'
+            }
+        });
+    };
+
+    const handleQuickAction = (action, icon) => {
+        Swal.fire({
+            title: 'Quick Action',
+            html: `
+                <div class="flex flex-col items-center">
+                    <div class="p-3 bg-gradient-to-br from-blue-500/20 to-green-500/20 rounded-xl mb-4">
+                        ${icon}
+                    </div>
+                    <p class="text-white font-semibold">${action}</p>
+                </div>
+            `,
+            background: '#1f2937',
+            color: '#fff',
+            showConfirmButton: false,
+            timer: 1500,
+            customClass: {
+                popup: 'rounded-2xl border border-gray-700/50'
+            }
         });
     };
 
     return (
-        <div className="min-h-screen pt-20 pb-12 px-4 flex flex-col items-center justify-center relative z-10">
-            <div className="text-center mb-12">
-                <h1 className="text-4xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400 mb-4">
-                    Event Card Demo
-                </h1>
-                <p className="text-xl text-gray-300">
-                    A preview of our premium event card design.
-                </p>
+        <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-900 to-black text-white overflow-hidden">
+            {/* Animated Background */}
+            <div className="absolute inset-0 overflow-hidden">
+                <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl"></div>
+                <div className="absolute top-1/2 -left-20 w-80 h-80 bg-green-500/10 rounded-full blur-3xl"></div>
+                <div className="absolute bottom-20 right-1/4 w-60 h-60 bg-yellow-500/10 rounded-full blur-3xl"></div>
             </div>
 
-            <div className="w-full max-w-md">
-                {/* Card Structure Copied from EventCard.jsx */}
-                <div className="group relative bg-gray-900/60 backdrop-blur-md border border-gray-700/50 rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl hover:shadow-indigo-500/20 transition-all duration-300 flex flex-col h-full">
-                    {/* Card Header */}
-                    <div className="h-48 bg-gradient-to-br from-indigo-600/20 to-purple-600/20 relative overflow-hidden group-hover:from-indigo-600/30 group-hover:to-purple-600/30 transition-colors">
-                        <div className="absolute top-4 right-4 bg-black/50 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-white border border-white/10">
-                            {sampleEvent.eventCategory}
+            <div className="relative z-10 pt-24 pb-12 px-4 sm:px-6 lg:px-8">
+                <div className="max-w-4xl mx-auto">
+                    {/* Header */}
+                    <div className="text-center mb-12">
+                        <div className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-500/20 to-green-500/20 px-4 py-2 rounded-full mb-6">
+                            <Sparkles size={16} className="text-yellow-400" />
+                            <span className="text-sm font-medium bg-gradient-to-r from-blue-400 to-green-400 bg-clip-text text-transparent">
+                                Interactive Demo
+                            </span>
                         </div>
-                        <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-gray-900 to-transparent">
-                            <h2 className="text-2xl font-bold text-white leading-tight">{sampleEvent.eventName}</h2>
-                        </div>
-                    </div>
-
-                    {/* Card Content */}
-                    <div className="p-6 flex-grow space-y-4">
-                        <p className="text-gray-300 text-sm line-clamp-3">
-                            {sampleEvent.eventDescription}
+                        
+                        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-4">
+                            <span className="block bg-gradient-to-r from-blue-400 via-green-400 to-yellow-400 bg-clip-text text-transparent">
+                                Event Card Demo
+                            </span>
+                        </h1>
+                        <p className="text-gray-400 text-lg sm:text-xl max-w-2xl mx-auto">
+                            Experience our premium event card design with interactive features
                         </p>
+                    </div>
 
-                        <div className="space-y-2 text-sm text-gray-400">
-                            <div className="flex items-center">
-                                <span className="w-5 text-center mr-2">📅</span>
-                                <span>
-                                    {new Date(sampleEvent.startDate).toLocaleDateString()}
+                    {/* Demo Card */}
+                    <div className="relative group">
+                        {/* Card Badges */}
+                        <div className="absolute -top-4 left-4 right-4 z-20 flex justify-between">
+                            <div className="px-4 py-2 bg-gradient-to-r from-yellow-500/20 to-yellow-600/20 backdrop-blur-sm rounded-full border border-yellow-500/30">
+                                <span className="text-sm font-bold text-yellow-300 flex items-center gap-2">
+                                    <Star size={14} />
+                                    FEATURED EVENT
                                 </span>
                             </div>
-                            <div className="flex items-center">
-                                <span className="w-5 text-center mr-2">📍</span>
-                                <span className="truncate">{sampleEvent.venueName}</span>
-                            </div>
-                            <div className="flex items-center">
-                                <span className="w-5 text-center mr-2">🎟️</span>
-                                <span className="text-indigo-400 font-semibold">
-                                    ${sampleEvent.ticketPrice}
+                            <div className="px-4 py-2 bg-gradient-to-r from-blue-500/20 to-blue-600/20 backdrop-blur-sm rounded-full border border-blue-500/30">
+                                <span className="text-sm font-bold text-blue-300">
+                                    {sampleEvent.registeredAttendees}/{sampleEvent.maxAttendees} spots
                                 </span>
-                                <span className="mx-2">•</span>
-                                <span>{sampleEvent.ticketType}</span>
                             </div>
-                            <div className="flex items-center">
-                                <span className="w-5 text-center mr-2">👤</span>
-                                <span className="truncate">By {sampleEvent.organizerName}</span>
+                        </div>
+
+                        <div className="bg-gradient-to-br from-gray-800/40 to-gray-900/40 backdrop-blur-xl rounded-3xl border border-gray-700/50 shadow-2xl overflow-hidden hover:shadow-blue-500/20 transition-all duration-300 hover:border-blue-500/50">
+                            {/* Event Header */}
+                            <div className="relative h-64 bg-gradient-to-br from-blue-600/30 via-green-600/20 to-transparent overflow-hidden">
+                                <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/80 to-transparent z-10"></div>
+                                <div className="absolute bottom-0 left-0 right-0 p-8 z-20">
+                                    <div className="flex items-center gap-3 mb-3">
+                                        <div className="px-3 py-1 bg-gray-900/80 backdrop-blur-sm rounded-lg border border-gray-700/50">
+                                            <span className="text-sm font-medium text-blue-400">{sampleEvent.eventCategory}</span>
+                                        </div>
+                                        <div className="flex items-center gap-1 px-2 py-1 bg-gray-900/80 backdrop-blur-sm rounded-lg">
+                                            <Star size={14} className="text-yellow-400 fill-yellow-400" />
+                                            <span className="text-sm font-medium text-white">{sampleEvent.rating}</span>
+                                            <span className="text-xs text-gray-400">({sampleEvent.reviews})</span>
+                                        </div>
+                                    </div>
+                                    <h2 className="text-3xl font-bold text-white mb-2">{sampleEvent.eventName}</h2>
+                                    <p className="text-gray-300 line-clamp-2">{sampleEvent.eventDescription}</p>
+                                </div>
+                            </div>
+
+                            {/* Event Details */}
+                            <div className="p-8">
+                                {/* Tags */}
+                                <div className="flex flex-wrap gap-2 mb-6">
+                                    {sampleEvent.tags.map((tag, idx) => (
+                                        <span 
+                                            key={idx}
+                                            className="px-3 py-1.5 bg-gray-800/50 backdrop-blur-sm text-gray-300 text-sm rounded-lg border border-gray-700/50 hover:border-blue-500/50 transition-colors cursor-pointer"
+                                            onClick={() => handleQuickAction(`Filter by ${tag}`, '#️⃣')}
+                                        >
+                                            #{tag}
+                                        </span>
+                                    ))}
+                                </div>
+
+                                {/* Details Grid */}
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                                    <div className="space-y-4">
+                                        <div className="flex items-center gap-3">
+                                            <div className="p-2 bg-gradient-to-r from-blue-500/20 to-blue-600/20 rounded-xl">
+                                                <Calendar size={20} className="text-blue-400" />
+                                            </div>
+                                            <div>
+                                                <p className="text-sm text-gray-400">Date & Time</p>
+                                                <p className="font-semibold text-white">
+                                                    {new Date(sampleEvent.startDate).toLocaleDateString('en-US', {
+                                                        weekday: 'short',
+                                                        month: 'short',
+                                                        day: 'numeric'
+                                                    })}
+                                                </p>
+                                                <p className="text-sm text-gray-300">
+                                                    {new Date(sampleEvent.startDate).toLocaleTimeString([], {
+                                                        hour: '2-digit',
+                                                        minute: '2-digit'
+                                                    })} • {new Date(sampleEvent.endDate).toLocaleTimeString([], {
+                                                        hour: '2-digit',
+                                                        minute: '2-digit'
+                                                    })}
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        <div className="flex items-center gap-3">
+                                            <div className="p-2 bg-gradient-to-r from-green-500/20 to-green-600/20 rounded-xl">
+                                                <Building size={20} className="text-green-400" />
+                                            </div>
+                                            <div>
+                                                <p className="text-sm text-gray-400">Venue</p>
+                                                <p className="font-semibold text-white">{sampleEvent.venueName}</p>
+                                                <p className="text-sm text-gray-300">{sampleEvent.venueAddress}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-4">
+                                        <div className="flex items-center gap-3">
+                                            <div className="p-2 bg-gradient-to-r from-yellow-500/20 to-yellow-600/20 rounded-xl">
+                                                <Ticket size={20} className="text-yellow-400" />
+                                            </div>
+                                            <div>
+                                                <p className="text-sm text-gray-400">Ticket</p>
+                                                <p className="font-semibold text-white">{sampleEvent.ticketType}</p>
+                                                <p className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-green-400 bg-clip-text text-transparent">
+                                                    ${sampleEvent.ticketPrice}
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        <div className="flex items-center gap-3">
+                                            <div className="p-2 bg-gradient-to-r from-cyan-500/20 to-cyan-600/20 rounded-xl">
+                                                <User size={20} className="text-cyan-400" />
+                                            </div>
+                                            <div>
+                                                <p className="text-sm text-gray-400">Organizer</p>
+                                                <p className="font-semibold text-white">{sampleEvent.organizerName}</p>
+                                                <div className="flex items-center gap-4 text-sm text-gray-300 mt-1">
+                                                    <span className="flex items-center gap-1">
+                                                        <Users size={14} />
+                                                        {sampleEvent.registeredAttendees} registered
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Action Buttons */}
+                                <div className="space-y-4">
+                                    {/* Primary Action */}
+                                    <button
+                                        onClick={() => handleDemoAction('Book Ticket')}
+                                        className="group/btn w-full flex items-center justify-center gap-3 px-6 py-4 bg-gradient-to-r from-blue-600 via-green-600 to-yellow-500 text-white font-bold rounded-2xl hover:opacity-90 transition-all duration-300 hover:scale-[1.02] shadow-lg hover:shadow-blue-500/30"
+                                    >
+                                        <Ticket size={24} />
+                                        <span className="text-lg">Book VIP Ticket - ${sampleEvent.ticketPrice}</span>
+                                        <ArrowRight size={20} className="group-hover/btn:translate-x-2 transition-transform" />
+                                    </button>
+
+                                    {/* Secondary Actions Grid */}
+                                    <div className="grid grid-cols-4 gap-3">
+                                        <button
+                                            onClick={() => handleDemoAction('Share Event')}
+                                            className="group/action flex flex-col items-center justify-center p-4 bg-gray-800/50 backdrop-blur-sm text-gray-400 hover:text-white rounded-xl transition-all duration-300 hover:bg-gray-800/80 border border-gray-700/50 hover:border-blue-500/50"
+                                            title="Share Event"
+                                        >
+                                            <Share2 size={20} className="mb-2 group-hover/action:scale-110 transition-transform" />
+                                            <span className="text-xs font-medium">Share</span>
+                                        </button>
+
+                                        <button
+                                            onClick={() => handleDemoAction('Download Ticket')}
+                                            className="group/action flex flex-col items-center justify-center p-4 bg-gray-800/50 backdrop-blur-sm text-gray-400 hover:text-white rounded-xl transition-all duration-300 hover:bg-gray-800/80 border border-gray-700/50 hover:border-green-500/50"
+                                            title="Download Ticket"
+                                        >
+                                            <Download size={20} className="mb-2 group-hover/action:scale-110 transition-transform" />
+                                            <span className="text-xs font-medium">Download</span>
+                                        </button>
+
+                                        <button
+                                            onClick={() => handleDemoAction('Generate QR Code')}
+                                            className="group/action flex flex-col items-center justify-center p-4 bg-gray-800/50 backdrop-blur-sm text-gray-400 hover:text-white rounded-xl transition-all duration-300 hover:bg-gray-800/80 border border-gray-700/50 hover:border-yellow-500/50"
+                                            title="QR Code"
+                                        >
+                                            <QrCode size={20} className="mb-2 group-hover/action:scale-110 transition-transform" />
+                                            <span className="text-xs font-medium">QR Code</span>
+                                        </button>
+
+                                        <button
+                                            onClick={() => handleDemoAction('Save to Bookmarks')}
+                                            className="group/action flex flex-col items-center justify-center p-4 bg-gray-800/50 backdrop-blur-sm text-gray-400 hover:text-white rounded-xl transition-all duration-300 hover:bg-gray-800/80 border border-gray-700/50 hover:border-purple-500/50"
+                                            title="Bookmark"
+                                        >
+                                            <Bookmark size={20} className="mb-2 group-hover/action:scale-110 transition-transform" />
+                                            <span className="text-xs font-medium">Save</span>
+                                        </button>
+                                    </div>
+
+                                    {/* Admin Actions */}
+                                    <div className="grid grid-cols-2 gap-3 pt-4 border-t border-gray-700/50">
+                                        <button
+                                            onClick={() => handleDemoAction('Edit Event Details')}
+                                            className="group/action flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-blue-600/20 to-blue-600/10 text-blue-400 hover:text-blue-300 rounded-xl transition-all duration-300 hover:from-blue-600/30 hover:to-blue-600/20 border border-blue-500/30"
+                                        >
+                                            <Edit size={18} />
+                                            <span>Edit Event</span>
+                                        </button>
+
+                                        <button
+                                            onClick={() => handleDemoAction('Delete Event')}
+                                            className="group/action flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-red-500/20 to-red-500/10 text-red-400 hover:text-red-300 rounded-xl transition-all duration-300 hover:from-red-500/30 hover:to-red-500/20 border border-red-500/30"
+                                        >
+                                            <Trash2 size={18} />
+                                            <span>Delete Event</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Footer Stats */}
+                            <div className="px-8 py-6 bg-gray-900/60 backdrop-blur-sm border-t border-gray-700/50">
+                                <div className="flex items-center justify-between text-sm text-gray-400">
+                                    <div className="flex items-center gap-6">
+                                        <span className="flex items-center gap-2">
+                                            <Eye size={16} />
+                                            {Math.floor(Math.random() * 1000) + 500} views
+                                        </span>
+                                        <span className="flex items-center gap-2">
+                                            <Heart size={16} className="text-red-400" />
+                                            {Math.floor(Math.random() * 200) + 100} likes
+                                        </span>
+                                        <span className="flex items-center gap-2">
+                                            <Send size={16} className="text-green-400" />
+                                            {Math.floor(Math.random() * 50) + 20} shares
+                                        </span>
+                                    </div>
+                                    <span className="text-xs text-gray-500">
+                                        Event ID: {sampleEvent.id}
+                                    </span>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    {/* Card Actions */}
-                    <div className="p-6 pt-0 mt-auto space-y-3">
-                        <button
-                            onClick={() => handleDemoAction('Book Ticket')}
-                            className="w-full flex items-center justify-center px-4 py-3 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white text-base font-bold rounded-xl transition-all shadow-lg hover:shadow-emerald-500/30 transform hover:-translate-y-0.5"
-                        >
-                            <span className="mr-2">🎟️</span> Book Ticket
-                        </button>
-
-                        <div className="grid grid-cols-4 gap-2">
-                            <button
-                                onClick={() => handleDemoAction('Share')}
-                                title="Share Event"
-                                className="flex items-center justify-center px-2 py-2 bg-gray-800 hover:bg-gray-700 text-white text-sm font-medium rounded-lg transition-colors border border-gray-600"
-                            >
-                                🔗
-                            </button>
-                            <button
-                                onClick={() => handleDemoAction('Download PNG')}
-                                title="Download as PNG"
-                                className="flex items-center justify-center px-2 py-2 bg-gray-800 hover:bg-gray-700 text-white text-sm font-medium rounded-lg transition-colors border border-gray-600"
-                            >
-                                🖼️
-                            </button>
-                            <button
-                                onClick={() => handleDemoAction('Download PDF')}
-                                title="Download as PDF"
-                                className="flex items-center justify-center px-2 py-2 bg-gray-800 hover:bg-gray-700 text-white text-sm font-medium rounded-lg transition-colors border border-gray-600"
-                            >
-                                📄
-                            </button>
-                            <button
-                                onClick={() => handleDemoAction('Edit')}
-                                title="Edit Event"
-                                className="flex items-center justify-center px-2 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors shadow-lg hover:shadow-indigo-500/30"
-                            >
-                                ✏️
-                            </button>
+                    {/* Demo Instructions */}
+                    <div className="mt-12 bg-gradient-to-br from-gray-800/30 to-gray-900/30 backdrop-blur-xl rounded-2xl border border-gray-700/50 p-6">
+                        <div className="flex items-center gap-3 mb-4">
+                            <div className="p-2 bg-gradient-to-r from-blue-500/20 to-green-500/20 rounded-xl">
+                                <Sparkles size={24} className="text-yellow-400" />
+                            </div>
+                            <h3 className="text-xl font-bold text-white">How to Use This Demo</h3>
                         </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {[
+                                { icon: '🎯', text: 'Click any button to see interactive features' },
+                                { icon: '✨', text: 'Hover over elements for subtle animations' },
+                                { icon: '🎨', text: 'Experience the blue-green-yellow color scheme' },
+                                { icon: '📱', text: 'Try resizing the window for responsive design' },
+                            ].map((tip, idx) => (
+                                <div key={idx} className="flex items-center gap-3 p-3 bg-gray-800/30 rounded-lg">
+                                    <span className="text-2xl">{tip.icon}</span>
+                                    <span className="text-gray-300 text-sm">{tip.text}</span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
 
-                        <button
-                            onClick={() => handleDemoAction('Delete')}
-                            className="w-full flex items-center justify-center px-4 py-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 hover:text-red-300 text-sm font-medium rounded-lg transition-colors border border-red-500/30"
+                    {/* Call to Action */}
+                    <div className="mt-8 text-center">
+                        <Link 
+                            to="/eventCard" 
+                            className="group inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-blue-600 to-green-600 text-white font-bold rounded-2xl hover:from-blue-700 hover:to-green-700 transition-all duration-300 hover:scale-105 shadow-lg"
                         >
-                            <span className="mr-2">🗑️</span> Delete Event
-                        </button>
+                            <span>View All Events</span>
+                            <ArrowRight size={20} className="group-hover:translate-x-2 transition-transform" />
+                        </Link>
                     </div>
                 </div>
             </div>
