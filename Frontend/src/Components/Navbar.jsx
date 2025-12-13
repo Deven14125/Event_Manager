@@ -1,28 +1,17 @@
-import { useState, useEffect, useRef } from "react";
-import { Link, useNavigate, Outlet } from "react-router-dom";
-import Swal from "sweetalert2";
-import Background3D from "./Background3D";
-import Footer from "./Footer";
-import ThemeToggle from "./ThemeToggle";
+import { useState, useEffect, useRef } from "react"; // React hooks for state and side effects
+import { Link, useNavigate, Outlet } from "react-router-dom"; // React Router for navigation
+import Swal from 'sweetalert2'; // SweetAlert for handling alert popups
+import Background3D from './Background3D'; // Import the 3D Background
+import Footer from './Footer'; // Import Footer
+import { useUser } from '../context/UserContext'; // Import UserContext
 
 const Navbar = () => {
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-    const dropdownRef = useRef(null);
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false); // New state to toggle dropdown
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // State for mobile menu
+    const dropdownRef = useRef(null); // Reference to dropdown menu
     const navigate = useNavigate();
-
-    // ---------------------- CHECK LOGIN STATUS ----------------------
-    useEffect(() => {
-        const checkLoginStatus = () => {
-            const token = localStorage.getItem("authToken");
-            setIsLoggedIn(!!token);
-        };
-
-        checkLoginStatus();
-        window.addEventListener("auth-change", checkLoginStatus);
-        return () => window.removeEventListener("auth-change", checkLoginStatus);
-    }, []);
+    const { isAuthenticated, logout: logoutUser, user } = useUser(); // Use UserContext
+    const isLoggedIn = isAuthenticated; // For backward compatibility
 
     // --------------------------- LOGOUT -----------------------------
     const handleLogout = () => {
@@ -31,17 +20,24 @@ const Navbar = () => {
             text: "Do you want to log out?",
             icon: "warning",
             showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Yes, log out!",
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, log out!',
+            cancelButtonText: 'Cancel',
+            background: '#1f2937',
+            color: '#fff'
         }).then((result) => {
             if (result.isConfirmed) {
-                localStorage.removeItem("authToken");
-                setIsLoggedIn(false);
-                window.dispatchEvent(new Event("auth-change"));
-                navigate("/login");
-
-                Swal.fire("Logged out!", "You have been logged out.", "success");
+                logoutUser(); // Use logout function from UserContext
+                navigate('/login'); // Redirect to login page
+                Swal.fire({
+                    title: 'Logged out!',
+                    text: 'You have successfully logged out.',
+                    icon: 'success',
+                    background: '#1f2937',
+                    color: '#fff',
+                    confirmButtonColor: '#4f46e5'
+                });
             }
         });
     };

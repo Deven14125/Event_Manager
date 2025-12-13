@@ -1,40 +1,15 @@
-import {Link} from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useState, useEffect } from 'react';
+import { useUser } from '../context/UserContext';
 
 const HomePage = () => {
-    const [userName, setUserName] = useState("Guest");
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-    useEffect(() => {
-        const userProfile = localStorage.getItem('userProfile');
-        const token = localStorage.getItem('authToken');
-        const userEmail = localStorage.getItem('userEmail');
-        
-        if (token) {
-            setIsLoggedIn(true);
-            let nameFound = false;
-
-            if (userProfile) {
-                try {
-                    const user = JSON.parse(userProfile);
-                    // Try multiple possible name fields
-                    const name = user.firstName || user.name || user.username || user.email?.split('@')[0];
-                    
-                    if (name) {
-                        setUserName(name);
-                        nameFound = true;
-                    }
-                } catch (e) {
-                    console.error("Error parsing user profile", e);
-                }
-            } 
-            
-            // Fallback to stored email if profile didn't yield a name
-            if (!nameFound && userEmail) {
-                setUserName(userEmail.split('@')[0]);
-            }
-        }
-    }, []);
+    const navigate = useNavigate();
+    const { user, isAuthenticated, isLoading } = useUser();
+    
+    // Get the user's name to display
+    const userName = isAuthenticated && user 
+        ? (user.name || user.firstName || user.email?.split('@')[0] || "User")
+        : "Guest";
 
     return (
         <div className="flex flex-col min-h-screen text-white">
@@ -48,8 +23,8 @@ const HomePage = () => {
                         Discover amazing events tailored just for you. Join us to learn, network, and have fun!
                     </p>
                     <button className='px-8 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold rounded-full transition-all transform hover:scale-105 shadow-lg'>
-                        <Link to={isLoggedIn ? '/eventCard' : '/login'}>
-                            {isLoggedIn ? 'Browse Events' : 'Get Started'}
+                        <Link to={isAuthenticated ? '/eventCard' : '/login'}>
+                            {isAuthenticated ? 'Browse Events' : 'Get Started'}
                         </Link>
                     </button>
                 </div>

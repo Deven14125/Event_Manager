@@ -7,32 +7,64 @@ const userLogin = async (req, res) => {
     try {
         const { email, password } = req.body;
 
-        // Find the user by username
+        // Validation: Check if all fields are provided
+        if (!email || !password) {
+            return res.status(400).json({ 
+                success: false, 
+                message: 'Please provide email and password' 
+            });
+        }
+
+        // Find the user by email
         const user = await User.findOne({ email: email });
         if (!user) {
-            return res.status(400).send("Invalid Username ");
+            return res.status(400).json({ 
+                success: false, 
+                message: 'Invalid email or password' 
+            });
         }
-        
-        // const salt = await bcrypt.genSalt(10)
-        // user.password = await bcrypt.hash(password, salt);
         
         // Compare the entered password with the stored password
-        const isValid = bcrypt.compareSync(password,user.password)
-        // if (password != user.password) {
-        //     return res.status(400).send("Invalid Username or Password");
-        // }
+        const isValid = await bcrypt.compare(password, user.password);
         
         if (!isValid) {
-            return res.status(400).send("Invalid Username or Password");
+            return res.status(400).json({ 
+                success: false, 
+                message: 'Invalid email or password' 
+            });
         }
 
-        // If username and password are correct, send success message
-        res.status(200).send("Login Successfully");
+        // Generate JWT token
+        const token = jwt.sign(
+            { 
+                userId: user._id, 
+                email: user.email 
+            }, 
+            process.env.JWT_SECRET || 'your-secret-key-change-this', 
+            { expiresIn: '7d' }
+        );
+
+        // Send success response with user data and token
+        res.status(200).json({ 
+            success: true, 
+            message: 'Login successful',
+            user: {
+                name: user.firstName,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                email: user.email,
+                mobile: user.mobile
+            },
+            token
+        });
 
     } catch (error) {
-        res.status(500).send("Internal Server Error");
+        console.error('Login Error:', error);
+        res.status(500).json({ 
+            success: false, 
+            message: 'Server error. Please try again later.' 
+        });
     }
-    
 };
 
 // const userLogin = async (req, res) => {
