@@ -11,7 +11,7 @@
 [![Express.js](https://img.shields.io/badge/Express.js-4.x-000000?logo=express)](https://expressjs.com/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.x-38B2AC?logo=tailwind-css)](https://tailwindcss.com/)
 
-[Live Demo](#) • [Report Bug](https://github.com/yourusername/event-manager/issues) • [Request Feature](https://github.com/yourusername/event-manager/issues)
+[Live Demo](#) • [Report Bug](https://github.com/Deven14125/event-manager/issues) • [Request Feature](https://github.com/Deven14125/event-manager/issues)
 
 </div>
 
@@ -1142,18 +1142,18 @@ SOFTWARE.
 
 ### Project Maintainers
 
-**Lead Developer**: Your Name
-- GitHub: [@yourusername](https://github.com/yourusername)
-- Email: your.email@example.com
-- LinkedIn: [Your LinkedIn](https://linkedin.com/in/yourprofile)
+**Lead Developer**: Deven Machchhar
+- GitHub: [@Deven14125](https://github.com/Deven14125)
+- Email: deven81281256@gmail.com
+- LinkedIn: [Deven Machchhar]((https://www.linkedin.com/in/deven-machchhar-b13287286/))
 
 ### Project Links
 
-- **Repository**: [https://github.com/yourusername/event-manager](https://github.com/yourusername/event-manager)
+- **Repository**: [https://github.com/Deven14125/event-manager](https://github.com/yourusername/event-manager)
 - **Live Demo**: [https://event-manager.netlify.app](https://event-manager.netlify.app)
 - **Documentation**: [https://docs.event-manager.com](https://docs.event-manager.com)
-- **Issue Tracker**: [GitHub Issues](https://github.com/yourusername/event-manager/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/yourusername/event-manager/discussions)
+- **Issue Tracker**: [GitHub Issues](https://github.com/Deven14125/event-manager/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/Deven14125/event-manager/discussions)
 
 ### Community
 
@@ -1163,9 +1163,9 @@ SOFTWARE.
 
 ### Support
 
-- **Bug Reports**: [Create an issue](https://github.com/yourusername/event-manager/issues/new?template=bug_report.md)
-- **Feature Requests**: [Create an issue](https://github.com/yourusername/event-manager/issues/new?template=feature_request.md)
-- **Questions**: [GitHub Discussions](https://github.com/yourusername/event-manager/discussions)
+- **Bug Reports**: [Create an issue](https://github.com/Deven14125/event-manager/issues/new?template=bug_report.md)
+- **Feature Requests**: [Create an issue](https://github.com/Deven14125/event-manager/issues/new?template=feature_request.md)
+- **Questions**: [GitHub Discussions](https://github.com/Deven14125/event-manager/discussions)
 
 ---
 
@@ -1198,7 +1198,7 @@ Special thanks to all the amazing technologies and resources that made this proj
 
 A huge thank you to all our contributors! 🎉
 
-[![Contributors](https://contrib.rocks/image?repo=yourusername/event-manager)](https://github.com/yourusername/event-manager/graphs/contributors)
+[![Contributors](https://contrib.rocks/image?repo=Deven14125/event-manager)](https://github.com/Deven14125/event-manager/graphs/contributors)
 
 Want to see your name here? [Start contributing!](#contributing)
 
@@ -1206,13 +1206,13 @@ Want to see your name here? [Start contributing!](#contributing)
 
 ## 📊 Project Stats
 
-![GitHub stars](https://img.shields.io/github/stars/yourusername/event-manager?style=social)
-![GitHub forks](https://img.shields.io/github/forks/yourusername/event-manager?style=social)
-![GitHub watchers](https://img.shields.io/github/watchers/yourusername/event-manager?style=social)
-![GitHub issues](https://img.shields.io/github/issues/yourusername/event-manager)
-![GitHub pull requests](https://img.shields.io/github/issues-pr/yourusername/event-manager)
-![GitHub last commit](https://img.shields.io/github/last-commit/yourusername/event-manager)
-![GitHub repo size](https://img.shields.io/github/repo-size/yourusername/event-manager)
+![GitHub stars](https://img.shields.io/github/stars/Deven14125/event-manager?style=social)
+![GitHub forks](https://img.shields.io/github/forks/Deven14125/event-manager?style=social)
+![GitHub watchers](https://img.shields.io/github/watchers/Deven14125/event-manager?style=social)
+![GitHub issues](https://img.shields.io/github/issues/Deven14125/event-manager)
+![GitHub pull requests](https://img.shields.io/github/issues-pr/Deven14125/event-manager)
+![GitHub last commit](https://img.shields.io/github/last-commit/Deven14125/event-manager)
+![GitHub repo size](https://img.shields.io/github/repo-size/Deven14125/event-manager)
 
 ---
 
