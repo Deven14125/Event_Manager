@@ -23,30 +23,30 @@ function App() {
 
   return (
     <BrowserRouter>
-        <ScrollToTop />
-        <Routes>
-          <Route path="/" element={<Navbar />}>
-            {/* Public Routes */}
-            <Route index element={<Home />} />
-            <Route path="/home" element={<Home/>} />
-            <Route path="/about" element={<About/>} />
-            <Route path="/contact" element={<Contact/>} />
-            <Route path="/eventDemo" element={<EventDemo eventData={eventData} />} />
-            <Route path="/login" element={<Login/>} />
-            <Route path="/signUp" element={<SignUp/>} />
+      <ScrollToTop />
+      <Routes>
+        <Route path="/" element={<Navbar />}>
+          {/* Public Routes */}
+          <Route index element={<Home />} />
+          <Route path="/home" element={<Home />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/eventDemo" element={<EventDemo eventData={eventData} />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signUp" element={<SignUp />} />
 
-            {/* Protected Routes */}
-            <Route element={<ProtectedRoute />}>
-              <Route path="/profile" element={<Profile />} />
-              <Route path="/eventForm" element={<EventForm onCreateEvent={setEventData}/>} />
-              <Route path="/eventCard" element={<EventCard />} />
-              <Route path='/eventEdit/:eventName' element={<EventEdit/>}/>
-              <Route path='/eventBooking' element={<EventBooking/>}/>
-              <Route path='/payment' element={<PaymentPage/>}/>
-              <Route path='/myBookings' element={<MyBookings/>}/>
-            </Route>
+          {/* Protected Routes */}
+          <Route element={<ProtectedRoute />}>
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/eventForm" element={<EventForm onCreateEvent={setEventData} />} />
+            <Route path="/eventCard" element={<EventCard />} />
+            <Route path='/eventEdit/:eventName' element={<EventEdit />} />
+            <Route path='/eventBooking' element={<EventBooking />} />
+            <Route path='/payment' element={<PaymentPage />} />
+            <Route path='/myBookings' element={<MyBookings />} />
           </Route>
-        </Routes>
+        </Route>
+      </Routes>
     </BrowserRouter>
   );
 }

@@ -1,10 +1,31 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import Sweet from 'sweetalert2';
+import {
+    Calendar,
+    MapPin,
+    Users,
+    Ticket,
+    FileText,
+    Building,
+    User,
+    Mail,
+    DollarSign,
+    Sparkles,
+    ArrowLeft,
+    CheckCircle,
+    AlertCircle,
+    Tag,
+    Award,
+    Loader2,
+    ArrowRight,
+    Globe,
+    Hash,
+    Zap
+} from 'lucide-react';
 
 const EventForm = () => {
     const [data, setData] = useState({
-        eventId: "",
         eventName: "",
         eventCategory: "",
         eventDescription: "",
@@ -12,155 +33,172 @@ const EventForm = () => {
         endDate: "",
         venueName: "",
         venueAddress: "",
+        city: "",
+        country: "",
         organizerName: "",
         organizerContact: "",
         ticketPrice: "",
-        ticketType: "",
+        ticketType: "General",
         maxAttendees: "",
+        tags: "",
+        eventImage: ""
     });
+
     const [errors, setErrors] = useState({});
     const [isLoading, setIsLoading] = useState(false);
+    const [currentStep, setCurrentStep] = useState(1);
     const navigate = useNavigate();
+
+    const categories = [
+        { value: "Conference", label: "Conference", icon: "👥", color: "from-blue-500 to-cyan-500" },
+        { value: "Workshop", label: "Workshop", icon: "🔧", color: "from-green-500 to-emerald-500" },
+        { value: "Concert", label: "Concert", icon: "🎵", color: "from-purple-500 to-pink-500" },
+        { value: "Meetup", label: "Meetup", icon: "🤝", color: "from-yellow-500 to-amber-500" },
+        { value: "Exhibition", label: "Exhibition", icon: "🎨", color: "from-indigo-500 to-blue-500" },
+        { value: "Webinar", label: "Webinar", icon: "💻", color: "from-gray-500 to-gray-600" },
+        { value: "Networking", label: "Networking", icon: "🌐", color: "from-teal-500 to-cyan-500" },
+        { value: "Festival", label: "Festival", icon: "🎉", color: "from-orange-500 to-red-500" }
+    ];
+
+    const ticketTypes = [
+        { value: "General", label: "General Admission" },
+        { value: "VIP", label: "VIP Access" },
+        { value: "EarlyBird", label: "Early Bird" },
+        { value: "Student", label: "Student" },
+        { value: "Group", label: "Group Ticket" },
+        { value: "Free", label: "Free Registration" }
+    ];
+
+    const steps = [
+        { number: 1, label: "Basic Info", icon: <FileText size={18} /> },
+        { number: 2, label: "Date & Location", icon: <MapPin size={18} /> },
+        { number: 3, label: "Ticket Details", icon: <Ticket size={18} /> },
+        { number: 4, label: "Review & Publish", icon: <Award size={18} /> }
+    ];
 
     const validateForm = () => {
         const newErrors = {};
-        
-        // Event name validation
-        if (!data.eventName.trim()) {
-            newErrors.eventName = "Event name is required";
-        } else if (data.eventName.length < 3) {
-            newErrors.eventName = "Event name must be at least 3 characters";
-        }
-        
-        // Category validation
-        if (!data.eventCategory) {
-            newErrors.eventCategory = "Please select a category";
-        }
-        
-        // Description validation
-        if (!data.eventDescription.trim()) {
-            newErrors.eventDescription = "Description is required";
-        } else if (data.eventDescription.length < 10) {
-            newErrors.eventDescription = "Description must be at least 10 characters";
-        }
-        
-        // Date validation
-        if (!data.startDate) {
-            newErrors.startDate = "Start date is required";
-        }
-        
-        if (!data.endDate) {
-            newErrors.endDate = "End date is required";
-        }
-        
+
+        if (!data.eventName.trim()) newErrors.eventName = "Event name is required";
+        else if (data.eventName.length < 3) newErrors.eventName = "Event name must be at least 3 characters";
+
+        if (!data.eventCategory) newErrors.eventCategory = "Please select a category";
+
+        if (!data.eventDescription.trim()) newErrors.eventDescription = "Description is required";
+        else if (data.eventDescription.length < 20) newErrors.eventDescription = "Description must be at least 20 characters";
+
+        if (!data.startDate) newErrors.startDate = "Start date is required";
+        if (!data.endDate) newErrors.endDate = "End date is required";
+
         if (data.startDate && data.endDate) {
             const start = new Date(data.startDate);
             const end = new Date(data.endDate);
-            if (start >= end) {
-                newErrors.endDate = "End date must be after start date";
-            }
+            if (start >= end) newErrors.endDate = "End date must be after start date";
         }
-        
-        // Venue validation
-        if (!data.venueName.trim()) {
-            newErrors.venueName = "Venue name is required";
-        }
-        
-        if (!data.venueAddress.trim()) {
-            newErrors.venueAddress = "Venue address is required";
-        }
-        
-        // Organizer validation
-        if (!data.organizerName.trim()) {
-            newErrors.organizerName = "Organizer name is required";
-        }
-        
-        if (!data.organizerContact.trim()) {
-            newErrors.organizerContact = "Organizer contact is required";
-        }
-        
-        // Ticket validation
-        if (data.ticketPrice === "" || isNaN(data.ticketPrice)) {
-            newErrors.ticketPrice = "Valid ticket price is required";
-        } else if (parseFloat(data.ticketPrice) < 0) {
-            newErrors.ticketPrice = "Ticket price cannot be negative";
-        }
-        
-        if (!data.ticketType) {
-            newErrors.ticketType = "Please select a ticket type";
-        }
-        
-        if (data.maxAttendees === "" || isNaN(data.maxAttendees)) {
-            newErrors.maxAttendees = "Valid number of attendees is required";
-        } else if (parseInt(data.maxAttendees) <= 0) {
-            newErrors.maxAttendees = "Maximum attendees must be greater than 0";
-        }
-        
+
+        if (!data.venueName.trim()) newErrors.venueName = "Venue name is required";
+        if (!data.venueAddress.trim()) newErrors.venueAddress = "Venue address is required";
+        if (!data.city.trim()) newErrors.city = "City is required";
+        if (!data.country.trim()) newErrors.country = "Country is required";
+
+        if (!data.organizerName.trim()) newErrors.organizerName = "Organizer name is required";
+        if (!data.organizerContact.trim()) newErrors.organizerContact = "Organizer contact is required";
+
+        if (data.ticketPrice === "" || isNaN(data.ticketPrice)) newErrors.ticketPrice = "Valid ticket price is required";
+        else if (parseFloat(data.ticketPrice) < 0) newErrors.ticketPrice = "Ticket price cannot be negative";
+
+        if (!data.ticketType) newErrors.ticketType = "Please select a ticket type";
+
+        if (data.maxAttendees === "" || isNaN(data.maxAttendees)) newErrors.maxAttendees = "Valid number of attendees is required";
+        else if (parseInt(data.maxAttendees) <= 0) newErrors.maxAttendees = "Maximum attendees must be greater than 0";
+
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
 
     const handleCreate = async (e) => {
         e.preventDefault();
-        
+
         if (!validateForm()) {
             Sweet.fire({
-                icon: 'error',
                 title: 'Validation Error',
-                text: 'Please correct the errors in the form',
+                html: `
+                    <div class="text-left">
+                        <p class="text-white mb-2">Please correct the following errors:</p>
+                        <ul class="list-disc pl-4 text-gray-300 space-y-1">
+                            ${Object.values(errors).map(error => `<li>${error}</li>`).join('')}
+                        </ul>
+                    </div>
+                `,
+                icon: 'error',
                 background: '#1f2937',
                 color: '#fff',
-                confirmButtonColor: '#ef4444'
+                confirmButtonColor: '#ef4444',
+                customClass: {
+                    popup: 'rounded-2xl border border-red-500/30'
+                }
             });
             return;
         }
-        
+
         setIsLoading(true);
 
         try {
-            // Prepare data with proper numeric types
             const requestData = {
                 ...data,
                 ticketPrice: typeof data.ticketPrice === 'string' ? parseFloat(data.ticketPrice) : data.ticketPrice,
-                maxAttendees: typeof data.maxAttendees === 'string' ? parseInt(data.maxAttendees) : data.maxAttendees
+                maxAttendees: typeof data.maxAttendees === 'string' ? parseInt(data.maxAttendees) : data.maxAttendees,
+                tags: data.tags ? data.tags.split(',').map(tag => tag.trim()) : []
             };
 
-            // Use the actual backend API instead of localStorage
             const api_url = "http://localhost:7120/event/addEvent";
             const response = await fetch(api_url, {
                 method: "POST",
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(requestData),
             });
 
             if (response.ok) {
-                const result = await response.json();
-                
+                await response.json();
+
                 Sweet.fire({
+                    title: 'Event Published Successfully!',
+                    html: `
+                        <div class="text-center">
+                            <div class="mb-4 text-5xl">🎉</div>
+                            <p class="text-white mb-2">Your event is now live!</p>
+                            <p class="text-gray-300">It will appear on the public feed shortly.</p>
+                        </div>
+                    `,
                     icon: 'success',
-                    title: 'Event Created!',
-                    text: 'Your event has been successfully published to the public feed.',
                     background: '#1f2937',
                     color: '#fff',
-                    confirmButtonColor: '#4f46e5'
+                    confirmButtonColor: '#10b981',
+                    timer: 3000,
+                    timerProgressBar: true,
+                    customClass: {
+                        popup: 'rounded-2xl border border-emerald-500/30'
+                    }
+                }).then(() => {
+                    navigate('/eventCard');
                 });
-                navigate('/eventCard'); // Redirect to All Events page to see it
             } else {
                 const errorData = await response.json();
                 throw new Error(errorData.message || 'Failed to create event');
             }
-            
-        } catch (e) {
-            console.error(e);
+
+        } catch (error) {
+            console.error(error);
             Sweet.fire({
+                title: 'Creation Failed',
+                text: error.message || 'Something went wrong. Please try again later.',
                 icon: 'error',
-                title: 'Error',
-                text: e.message || 'Something went wrong. Please try again later.',
                 background: '#1f2937',
                 color: '#fff',
-                confirmButtonColor: '#ef4444'
+                confirmButtonColor: '#ef4444',
+                customClass: {
+                    popup: 'rounded-2xl border border-red-500/30'
+                }
             });
         } finally {
             setIsLoading(false);
@@ -169,340 +207,601 @@ const EventForm = () => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        
-        // Convert numeric fields to numbers
+
         let finalValue = value;
-        if (name === 'ticketPrice') {
-            // Allow decimal numbers for ticket price
-            finalValue = value;
-        } else if (name === 'maxAttendees') {
-            // Allow only integers for max attendees
+        if (name === 'ticketPrice' || name === 'maxAttendees') {
             finalValue = value;
         }
-        
+
         setData(prev => ({ ...prev, [name]: finalValue }));
-        
-        // Clear error when user starts typing
+
         if (errors[name]) {
-            setErrors(prev => {
-                const newErrors = { ...prev };
-                delete newErrors[name];
-                return newErrors;
-            });
+            setErrors(prev => ({ ...prev, [name]: undefined }));
         }
     };
 
-    // Accessibility: Handle Enter key press for form submission
-    const handleKeyPress = (e) => {
-        if (e.key === 'Enter' && e.ctrlKey) {
-            handleCreate(e);
+    const nextStep = () => {
+        if (currentStep < steps.length) {
+            setCurrentStep(currentStep + 1);
         }
     };
 
-    const inputClasses = "w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all";
-    const errorInputClasses = "w-full px-4 py-3 bg-gray-800/50 border-2 border-red-500 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all";
-    const labelClasses = "block text-sm font-medium text-gray-300 mb-2";
-    const errorLabelClasses = "block text-sm font-medium text-red-400 mb-2";
-    const errorMessageClasses = "text-red-400 text-sm mt-1";
-    const sectionTitleClasses = "text-xl font-bold text-white border-b border-gray-700 pb-2 mb-6 mt-8 first:mt-0";
+    const prevStep = () => {
+        if (currentStep > 1) {
+            setCurrentStep(currentStep - 1);
+        }
+    };
+
+    const inputClasses = "w-full bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500/50 transition-all duration-300";
+    const errorInputClasses = "w-full bg-gray-800/50 backdrop-blur-sm border border-red-500/50 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500/50 transition-all duration-300";
+    const labelClasses = "block text-sm font-medium text-gray-300 mb-2 flex items-center gap-2";
+    const errorMessageClasses = "text-red-400 text-sm mt-2 flex items-center gap-2";
 
     return (
-        <div className="min-h-screen pt-20 pb-12 px-4 sm:px-6 lg:px-8 relative z-10">
-            <div className="max-w-4xl mx-auto">
-                <div className="bg-gray-900/60 backdrop-blur-md border border-gray-700/50 rounded-3xl p-8 md:p-12 shadow-2xl">
-                    <div className="text-center mb-10">
-                        <h2 className="text-3xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400 mb-4">
-                            Create Your Event
-                        </h2>
-                        <p className="text-gray-400">Fill in the details below to publish your event to the world.</p>
+        <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-900 to-black text-white overflow-hidden">
+            {/* Animated Background */}
+            <div className="absolute inset-0 overflow-hidden">
+                <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl"></div>
+                <div className="absolute bottom-40 -left-20 w-80 h-80 bg-green-500/10 rounded-full blur-3xl"></div>
+                <div className="absolute top-1/2 right-1/4 w-60 h-60 bg-yellow-500/10 rounded-full blur-3xl"></div>
+            </div>
+
+            <div className="relative z-10 pt-24 pb-12 px-4 sm:px-6 lg:px-8">
+                <div className="max-w-5xl mx-auto">
+                    {/* Header */}
+                    <div className="mb-8">
+                        <Link
+                            to='/eventCard'
+                            className="group inline-flex items-center gap-2 text-gray-400 hover:text-white transition-colors mb-6"
+                        >
+                            <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
+                            <span>Back to Events</span>
+                        </Link>
+
+                        <div className="text-center mb-10">
+                            <div className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-500/20 to-green-500/20 px-4 py-2 rounded-full mb-6">
+                                <Sparkles size={16} className="text-yellow-400" />
+                                <span className="text-sm font-medium bg-gradient-to-r from-blue-400 to-green-400 bg-clip-text text-transparent">
+                                    Create New Event
+                                </span>
+                            </div>
+
+                            <h1 className="text-4xl sm:text-5xl font-bold mb-4">
+                                <span className="block bg-gradient-to-r from-blue-400 via-green-400 to-yellow-400 bg-clip-text text-transparent">
+                                    Create Event
+                                </span>
+                            </h1>
+                            <p className="text-gray-400 text-lg">
+                                Share your amazing event with the world in just a few steps
+                            </p>
+                        </div>
                     </div>
 
-                    <form onSubmit={handleCreate} className="space-y-6" onKeyPress={handleKeyPress} aria-label="Event Creation Form">
-                        {/* Event Details */}
-                        <div>
-                            <h3 className={sectionTitleClasses} id="event-details-section">Event Details</h3>
-                            <div className="grid gap-6 grid-cols-1 md:grid-cols-2">
-                                <div>
-                                    <label htmlFor="eventName" className={errors.eventName ? errorLabelClasses : labelClasses}>
-                                        Event Name
-                                    </label>
-                                    <input
-                                        type="text"
-                                        id="eventName"
-                                        name="eventName"
-                                        className={errors.eventName ? errorInputClasses : inputClasses}
-                                        placeholder="e.g. Tech Conference 2024"
-                                        value={data.eventName}
-                                        onChange={handleChange}
-                                        required
-                                        aria-describedby={errors.eventName ? "eventName-error" : undefined}
-                                        aria-invalid={!!errors.eventName}
-                                    />
-                                    {errors.eventName && <p id="eventName-error" className={errorMessageClasses}>{errors.eventName}</p>}
-                                </div>
-                                <div>
-                                    <label htmlFor="eventCategory" className={errors.eventCategory ? errorLabelClasses : labelClasses}>
-                                        Category
-                                    </label>
-                                    <select
-                                        id="eventCategory"
-                                        name="eventCategory"
-                                        className={errors.eventCategory ? errorInputClasses : inputClasses}
-                                        value={data.eventCategory}
-                                        onChange={handleChange}
-                                        required
-                                        aria-describedby={errors.eventCategory ? "eventCategory-error" : undefined}
-                                        aria-invalid={!!errors.eventCategory}
-                                    >
-                                        <option value="" className="bg-gray-800">Select Category</option>
-                                        <option value="Webinar" className="bg-gray-800">Webinar</option>
-                                        <option value="Workshop" className="bg-gray-800">Workshop</option>
-                                        <option value="Conference" className="bg-gray-800">Conference</option>
-                                        <option value="Social Event" className="bg-gray-800">Social Event</option>
-                                        <option value="Concert" className="bg-gray-800">Concert</option>
-                                    </select>
-                                    {errors.eventCategory && <p id="eventCategory-error" className={errorMessageClasses}>{errors.eventCategory}</p>}
-                                </div>
-                                <div className="col-span-1 md:col-span-2">
-                                    <label htmlFor="eventDescription" className={errors.eventDescription ? errorLabelClasses : labelClasses}>
-                                        Description
-                                    </label>
-                                    <textarea
-                                        id="eventDescription"
-                                        name="eventDescription"
-                                        rows="4"
-                                        className={errors.eventDescription ? errorInputClasses : inputClasses}
-                                        placeholder="Describe your event in detail..."
-                                        value={data.eventDescription}
-                                        onChange={handleChange}
-                                        required
-                                        aria-describedby={errors.eventDescription ? "eventDescription-error" : undefined}
-                                        aria-invalid={!!errors.eventDescription}
-                                    ></textarea>
-                                    {errors.eventDescription && <p id="eventDescription-error" className={errorMessageClasses}>{errors.eventDescription}</p>}
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Date & Time */}
-                        <div>
-                            <h3 className={sectionTitleClasses} id="date-time-section">Date & Time</h3>
-                            <div className="grid gap-6 grid-cols-1 md:grid-cols-2">
-                                <div>
-                                    <label htmlFor="startDate" className={errors.startDate ? errorLabelClasses : labelClasses}>
-                                        Start Date & Time
-                                    </label>
-                                    <input
-                                        type="datetime-local"
-                                        id="startDate"
-                                        name="startDate"
-                                        className={errors.startDate ? errorInputClasses : inputClasses}
-                                        value={data.startDate}
-                                        onChange={handleChange}
-                                        required
-                                        aria-describedby={errors.startDate ? "startDate-error" : undefined}
-                                        aria-invalid={!!errors.startDate}
-                                    />
-                                    {errors.startDate && <p id="startDate-error" className={errorMessageClasses}>{errors.startDate}</p>}
-                                </div>
-                                <div>
-                                    <label htmlFor="endDate" className={errors.endDate ? errorLabelClasses : labelClasses}>
-                                        End Date & Time
-                                    </label>
-                                    <input
-                                        type="datetime-local"
-                                        id="endDate"
-                                        name="endDate"
-                                        className={errors.endDate ? errorInputClasses : inputClasses}
-                                        value={data.endDate}
-                                        onChange={handleChange}
-                                        required
-                                        aria-describedby={errors.endDate ? "endDate-error" : undefined}
-                                        aria-invalid={!!errors.endDate}
-                                    />
-                                    {errors.endDate && <p id="endDate-error" className={errorMessageClasses}>{errors.endDate}</p>}
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Location */}
-                        <div>
-                            <h3 className={sectionTitleClasses} id="location-section">Location</h3>
-                            <div className="grid gap-6 grid-cols-1 md:grid-cols-2">
-                                <div>
-                                    <label htmlFor="venueName" className={errors.venueName ? errorLabelClasses : labelClasses}>
-                                        Venue Name
-                                    </label>
-                                    <input
-                                        type="text"
-                                        id="venueName"
-                                        name="venueName"
-                                        className={errors.venueName ? errorInputClasses : inputClasses}
-                                        placeholder="e.g. Convention Center"
-                                        value={data.venueName}
-                                        onChange={handleChange}
-                                        required
-                                        aria-describedby={errors.venueName ? "venueName-error" : undefined}
-                                        aria-invalid={!!errors.venueName}
-                                    />
-                                    {errors.venueName && <p id="venueName-error" className={errorMessageClasses}>{errors.venueName}</p>}
-                                </div>
-                                <div>
-                                    <label htmlFor="venueAddress" className={errors.venueAddress ? errorLabelClasses : labelClasses}>
-                                        Address
-                                    </label>
-                                    <input
-                                        type="text"
-                                        id="venueAddress"
-                                        name="venueAddress"
-                                        className={errors.venueAddress ? errorInputClasses : inputClasses}
-                                        placeholder="e.g. 123 Main Street, City"
-                                        value={data.venueAddress}
-                                        onChange={handleChange}
-                                        required
-                                        aria-describedby={errors.venueAddress ? "venueAddress-error" : undefined}
-                                        aria-invalid={!!errors.venueAddress}
-                                    />
-                                    {errors.venueAddress && <p id="venueAddress-error" className={errorMessageClasses}>{errors.venueAddress}</p>}
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Organizer */}
-                        <div>
-                            <h3 className={sectionTitleClasses} id="organizer-section">Organizer</h3>
-                            <div className="grid gap-6 grid-cols-1 md:grid-cols-2">
-                                <div>
-                                    <label htmlFor="organizerName" className={errors.organizerName ? errorLabelClasses : labelClasses}>
-                                        Organizer Name
-                                    </label>
-                                    <input
-                                        type="text"
-                                        id="organizerName"
-                                        name="organizerName"
-                                        className={errors.organizerName ? errorInputClasses : inputClasses}
-                                        placeholder="e.g. John Smith"
-                                        value={data.organizerName}
-                                        onChange={handleChange}
-                                        required
-                                        aria-describedby={errors.organizerName ? "organizerName-error" : undefined}
-                                        aria-invalid={!!errors.organizerName}
-                                    />
-                                    {errors.organizerName && <p id="organizerName-error" className={errorMessageClasses}>{errors.organizerName}</p>}
-                                </div>
-                                <div>
-                                    <label htmlFor="organizerContact" className={errors.organizerContact ? errorLabelClasses : labelClasses}>
-                                        Contact Email/Phone
-                                    </label>
-                                    <input
-                                        type="text"
-                                        id="organizerContact"
-                                        name="organizerContact"
-                                        className={errors.organizerContact ? errorInputClasses : inputClasses}
-                                        placeholder="e.g. john@example.com or +1234567890"
-                                        value={data.organizerContact}
-                                        onChange={handleChange}
-                                        required
-                                        aria-describedby={errors.organizerContact ? "organizerContact-error" : undefined}
-                                        aria-invalid={!!errors.organizerContact}
-                                    />
-                                    {errors.organizerContact && <p id="organizerContact-error" className={errorMessageClasses}>{errors.organizerContact}</p>}
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Ticketing */}
-                        <div>
-                            <h3 className={sectionTitleClasses} id="ticketing-section">Ticketing</h3>
-                            <div className="grid gap-6 grid-cols-1 md:grid-cols-3">
-                                <div>
-                                    <label htmlFor="ticketPrice" className={errors.ticketPrice ? errorLabelClasses : labelClasses}>
-                                        Price ($)
-                                    </label>
-                                    <input
-                                        type="number"
-                                        id="ticketPrice"
-                                        name="ticketPrice"
-                                        min="0"
-                                        step="0.01"
-                                        className={errors.ticketPrice ? errorInputClasses : inputClasses}
-                                        placeholder="e.g. 25.99"
-                                        value={data.ticketPrice}
-                                        onChange={handleChange}
-                                        required
-                                        aria-describedby={errors.ticketPrice ? "ticketPrice-error" : undefined}
-                                        aria-invalid={!!errors.ticketPrice}
-                                    />
-                                    {errors.ticketPrice && <p id="ticketPrice-error" className={errorMessageClasses}>{errors.ticketPrice}</p>}
-                                </div>
-                                <div>
-                                    <label htmlFor="ticketType" className={errors.ticketType ? errorLabelClasses : labelClasses}>
-                                        Ticket Type
-                                    </label>
-                                    <select
-                                        id="ticketType"
-                                        name="ticketType"
-                                        className={errors.ticketType ? errorInputClasses : inputClasses}
-                                        value={data.ticketType}
-                                        onChange={handleChange}
-                                        required
-                                        aria-describedby={errors.ticketType ? "ticketType-error" : undefined}
-                                        aria-invalid={!!errors.ticketType}
-                                    >
-                                        <option value="" className="bg-gray-800">Select Type</option>
-                                        <option value="Free" className="bg-gray-800">Free</option>
-                                        <option value="Paid" className="bg-gray-800">Paid</option>
-                                    </select>
-                                    {errors.ticketType && <p id="ticketType-error" className={errorMessageClasses}>{errors.ticketType}</p>}
-                                </div>
-                                <div>
-                                    <label htmlFor="maxAttendees" className={errors.maxAttendees ? errorLabelClasses : labelClasses}>
-                                        Max Attendees
-                                    </label>
-                                    <input
-                                        type="number"
-                                        id="maxAttendees"
-                                        name="maxAttendees"
-                                        min="1"
-                                        className={errors.maxAttendees ? errorInputClasses : inputClasses}
-                                        placeholder="e.g. 100"
-                                        value={data.maxAttendees}
-                                        onChange={handleChange}
-                                        required
-                                        aria-describedby={errors.maxAttendees ? "maxAttendees-error" : undefined}
-                                        aria-invalid={!!errors.maxAttendees}
-                                    />
-                                    {errors.maxAttendees && <p id="maxAttendees-error" className={errorMessageClasses}>{errors.maxAttendees}</p>}
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Submit Button */}
-                        <div className="pt-6">
-                            <button
-                                type="submit"
-                                disabled={isLoading}
-                                className={`w-full py-4 px-6 rounded-xl text-lg font-bold text-white transition-all shadow-lg transform hover:scale-[1.02] focus:outline-none focus:ring-4 focus:ring-indigo-500/50 ${
-                                    isLoading 
-                                        ? 'bg-indigo-700 cursor-not-allowed opacity-75' 
-                                        : 'bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700'
-                                }`}
-                                aria-busy={isLoading}
-                            >
-                                {isLoading ? (
-                                    <span className="flex items-center justify-center">
-                                        <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden="true">
-                                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                        </svg>
-                                        Processing...
+                    {/* Progress Steps */}
+                    <div className="mb-8">
+                        <div className="flex justify-between mb-4">
+                            {steps.map((step) => (
+                                <div key={step.number} className="flex flex-col items-center">
+                                    <div className={`w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 ${step.number === currentStep
+                                            ? 'bg-gradient-to-r from-blue-600 to-green-600 text-white shadow-lg'
+                                            : step.number < currentStep
+                                                ? 'bg-gradient-to-r from-green-500/20 to-green-600/20 text-green-400'
+                                                : 'bg-gray-800/50 text-gray-400'
+                                        }`}>
+                                        {step.icon}
+                                    </div>
+                                    <span className={`text-xs mt-2 ${step.number === currentStep ? 'text-white font-bold' : 'text-gray-400'}`}>
+                                        {step.label}
                                     </span>
-                                ) : (
-                                    'Publish Event'
-                                )}
-                            </button>
+                                </div>
+                            ))}
                         </div>
-                    </form>
+                        <div className="relative h-2 bg-gray-800/50 rounded-full">
+                            <div
+                                className="absolute top-0 left-0 h-full bg-gradient-to-r from-blue-600 to-green-600 rounded-full transition-all duration-500"
+                                style={{ width: `${((currentStep - 1) / (steps.length - 1)) * 100}%` }}
+                            ></div>
+                        </div>
+                    </div>
+
+                    <div className="bg-gradient-to-br from-gray-800/40 to-gray-900/40 backdrop-blur-xl rounded-3xl border border-gray-700/50 shadow-2xl overflow-hidden">
+                        <form onSubmit={handleCreate} className="p-6 sm:p-8">
+                            {/* Step 1: Basic Info */}
+                            {currentStep === 1 && (
+                                <div className="space-y-6">
+                                    <div className="flex items-center gap-3 mb-6">
+                                        <div className="p-2 bg-gradient-to-r from-blue-500/20 to-blue-600/20 rounded-xl">
+                                            <FileText size={24} className="text-blue-400" />
+                                        </div>
+                                        <h2 className="text-2xl font-bold text-white">Basic Information</h2>
+                                    </div>
+
+                                    <div>
+                                        <label className={labelClasses}>
+                                            <Tag size={16} />
+                                            Event Name
+                                        </label>
+                                        <input
+                                            type="text"
+                                            name="eventName"
+                                            value={data.eventName}
+                                            onChange={handleChange}
+                                            className={errors.eventName ? errorInputClasses : inputClasses}
+                                            placeholder="Enter a catchy event name"
+                                        />
+                                        {errors.eventName && (
+                                            <p className={errorMessageClasses}>
+                                                <AlertCircle size={14} />
+                                                {errors.eventName}
+                                            </p>
+                                        )}
+                                    </div>
+
+                                    <div>
+                                        <label className={labelClasses}>
+                                            <Tag size={16} />
+                                            Event Category
+                                        </label>
+                                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                                            {categories.map(cat => (
+                                                <button
+                                                    key={cat.value}
+                                                    type="button"
+                                                    onClick={() => {
+                                                        setData(prev => ({ ...prev, eventCategory: cat.value }));
+                                                        if (errors.eventCategory) setErrors(prev => ({ ...prev, eventCategory: undefined }));
+                                                    }}
+                                                    className={`flex flex-col items-center justify-center p-4 rounded-xl transition-all duration-300 ${data.eventCategory === cat.value
+                                                            ? 'bg-gradient-to-br from-blue-500/20 to-green-500/20 border-2 border-blue-500/50'
+                                                            : 'bg-gray-800/30 border border-gray-700/50 hover:border-blue-500/30'
+                                                        }`}
+                                                >
+                                                    <span className="text-2xl mb-2">{cat.icon}</span>
+                                                    <span className="text-xs font-medium text-center">{cat.label}</span>
+                                                </button>
+                                            ))}
+                                        </div>
+                                        {errors.eventCategory && (
+                                            <p className={errorMessageClasses}>
+                                                <AlertCircle size={14} />
+                                                {errors.eventCategory}
+                                            </p>
+                                        )}
+                                    </div>
+
+                                    <div>
+                                        <label className={labelClasses}>
+                                            <FileText size={16} />
+                                            Description
+                                        </label>
+                                        <textarea
+                                            name="eventDescription"
+                                            value={data.eventDescription}
+                                            onChange={handleChange}
+                                            rows="4"
+                                            className={`${errors.eventDescription ? errorInputClasses : inputClasses} resize-none`}
+                                            placeholder="Describe your event in detail. What makes it special?"
+                                        />
+                                        <div className="flex justify-between mt-2">
+                                            {errors.eventDescription && (
+                                                <p className={errorMessageClasses}>
+                                                    <AlertCircle size={14} />
+                                                    {errors.eventDescription}
+                                                </p>
+                                            )}
+                                            <span className="text-xs text-gray-500 ml-auto">
+                                                {data.eventDescription.length}/500 characters
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <label className={labelClasses}>
+                                            <Hash size={16} />
+                                            Tags (comma separated)
+                                        </label>
+                                        <input
+                                            type="text"
+                                            name="tags"
+                                            value={data.tags}
+                                            onChange={handleChange}
+                                            className={inputClasses}
+                                            placeholder="e.g., networking, tech, workshop, startup"
+                                        />
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Step 2: Date & Location */}
+                            {currentStep === 2 && (
+                                <div className="space-y-6">
+                                    <div className="flex items-center gap-3 mb-6">
+                                        <div className="p-2 bg-gradient-to-r from-green-500/20 to-green-600/20 rounded-xl">
+                                            <MapPin size={24} className="text-green-400" />
+                                        </div>
+                                        <h2 className="text-2xl font-bold text-white">Date & Location</h2>
+                                    </div>
+
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div>
+                                            <label className={labelClasses}>
+                                                <Calendar size={16} />
+                                                Start Date & Time
+                                            </label>
+                                            <input
+                                                type="datetime-local"
+                                                name="startDate"
+                                                value={data.startDate}
+                                                onChange={handleChange}
+                                                className={errors.startDate ? errorInputClasses : inputClasses}
+                                            />
+                                            {errors.startDate && (
+                                                <p className={errorMessageClasses}>
+                                                    <AlertCircle size={14} />
+                                                    {errors.startDate}
+                                                </p>
+                                            )}
+                                        </div>
+
+                                        <div>
+                                            <label className={labelClasses}>
+                                                <Calendar size={16} />
+                                                End Date & Time
+                                            </label>
+                                            <input
+                                                type="datetime-local"
+                                                name="endDate"
+                                                value={data.endDate}
+                                                onChange={handleChange}
+                                                className={errors.endDate ? errorInputClasses : inputClasses}
+                                            />
+                                            {errors.endDate && (
+                                                <p className={errorMessageClasses}>
+                                                    <AlertCircle size={14} />
+                                                    {errors.endDate}
+                                                </p>
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <label className={labelClasses}>
+                                            <Building size={16} />
+                                            Venue Name
+                                        </label>
+                                        <input
+                                            type="text"
+                                            name="venueName"
+                                            value={data.venueName}
+                                            onChange={handleChange}
+                                            className={errors.venueName ? errorInputClasses : inputClasses}
+                                            placeholder="e.g., Grand Convention Center"
+                                        />
+                                        {errors.venueName && (
+                                            <p className={errorMessageClasses}>
+                                                <AlertCircle size={14} />
+                                                {errors.venueName}
+                                            </p>
+                                        )}
+                                    </div>
+
+                                    <div>
+                                        <label className={labelClasses}>
+                                            <MapPin size={16} />
+                                            Full Address
+                                        </label>
+                                        <input
+                                            type="text"
+                                            name="venueAddress"
+                                            value={data.venueAddress}
+                                            onChange={handleChange}
+                                            className={errors.venueAddress ? errorInputClasses : inputClasses}
+                                            placeholder="Street address, building, floor"
+                                        />
+                                        {errors.venueAddress && (
+                                            <p className={errorMessageClasses}>
+                                                <AlertCircle size={14} />
+                                                {errors.venueAddress}
+                                            </p>
+                                        )}
+                                    </div>
+
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div>
+                                            <label className={labelClasses}>
+                                                <MapPin size={16} />
+                                                City
+                                            </label>
+                                            <input
+                                                type="text"
+                                                name="city"
+                                                value={data.city}
+                                                onChange={handleChange}
+                                                className={errors.city ? errorInputClasses : inputClasses}
+                                                placeholder="City"
+                                            />
+                                            {errors.city && (
+                                                <p className={errorMessageClasses}>
+                                                    <AlertCircle size={14} />
+                                                    {errors.city}
+                                                </p>
+                                            )}
+                                        </div>
+
+                                        <div>
+                                            <label className={labelClasses}>
+                                                <Globe size={16} />
+                                                Country
+                                            </label>
+                                            <input
+                                                type="text"
+                                                name="country"
+                                                value={data.country}
+                                                onChange={handleChange}
+                                                className={errors.country ? errorInputClasses : inputClasses}
+                                                placeholder="Country"
+                                            />
+                                            {errors.country && (
+                                                <p className={errorMessageClasses}>
+                                                    <AlertCircle size={14} />
+                                                    {errors.country}
+                                                </p>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Step 3: Ticket Details */}
+                            {currentStep === 3 && (
+                                <div className="space-y-6">
+                                    <div className="flex items-center gap-3 mb-6">
+                                        <div className="p-2 bg-gradient-to-r from-yellow-500/20 to-yellow-600/20 rounded-xl">
+                                            <Ticket size={24} className="text-yellow-400" />
+                                        </div>
+                                        <h2 className="text-2xl font-bold text-white">Ticket & Organizer Details</h2>
+                                    </div>
+
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div>
+                                            <label className={labelClasses}>
+                                                <DollarSign size={16} />
+                                                Ticket Price ($)
+                                            </label>
+                                            <input
+                                                type="number"
+                                                name="ticketPrice"
+                                                value={data.ticketPrice}
+                                                onChange={handleChange}
+                                                className={errors.ticketPrice ? errorInputClasses : inputClasses}
+                                                placeholder="0.00"
+                                                step="0.01"
+                                                min="0"
+                                            />
+                                            {errors.ticketPrice && (
+                                                <p className={errorMessageClasses}>
+                                                    <AlertCircle size={14} />
+                                                    {errors.ticketPrice}
+                                                </p>
+                                            )}
+                                        </div>
+
+                                        <div>
+                                            <label className={labelClasses}>
+                                                <Ticket size={16} />
+                                                Ticket Type
+                                            </label>
+                                            <select
+                                                name="ticketType"
+                                                value={data.ticketType}
+                                                onChange={handleChange}
+                                                className={errors.ticketType ? errorInputClasses : inputClasses}
+                                            >
+                                                {ticketTypes.map(type => (
+                                                    <option key={type.value} value={type.value}>
+                                                        {type.label}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                            {errors.ticketType && (
+                                                <p className={errorMessageClasses}>
+                                                    <AlertCircle size={14} />
+                                                    {errors.ticketType}
+                                                </p>
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <label className={labelClasses}>
+                                            <Users size={16} />
+                                            Maximum Attendees
+                                        </label>
+                                        <input
+                                            type="number"
+                                            name="maxAttendees"
+                                            value={data.maxAttendees}
+                                            onChange={handleChange}
+                                            className={errors.maxAttendees ? errorInputClasses : inputClasses}
+                                            placeholder="100"
+                                            min="1"
+                                        />
+                                        {errors.maxAttendees && (
+                                            <p className={errorMessageClasses}>
+                                                <AlertCircle size={14} />
+                                                {errors.maxAttendees}
+                                            </p>
+                                        )}
+                                    </div>
+
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div>
+                                            <label className={labelClasses}>
+                                                <User size={16} />
+                                                Organizer Name
+                                            </label>
+                                            <input
+                                                type="text"
+                                                name="organizerName"
+                                                value={data.organizerName}
+                                                onChange={handleChange}
+                                                className={errors.organizerName ? errorInputClasses : inputClasses}
+                                                placeholder="Organizer or Company Name"
+                                            />
+                                            {errors.organizerName && (
+                                                <p className={errorMessageClasses}>
+                                                    <AlertCircle size={14} />
+                                                    {errors.organizerName}
+                                                </p>
+                                            )}
+                                        </div>
+
+                                        <div>
+                                            <label className={labelClasses}>
+                                                <Mail size={16} />
+                                                Contact Information
+                                            </label>
+                                            <input
+                                                type="text"
+                                                name="organizerContact"
+                                                value={data.organizerContact}
+                                                onChange={handleChange}
+                                                className={errors.organizerContact ? errorInputClasses : inputClasses}
+                                                placeholder="email@example.com or +1234567890"
+                                            />
+                                            {errors.organizerContact && (
+                                                <p className={errorMessageClasses}>
+                                                    <AlertCircle size={14} />
+                                                    {errors.organizerContact}
+                                                </p>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Step 4: Review & Publish */}
+                            {currentStep === 4 && (
+                                <div className="space-y-6">
+                                    <div className="flex items-center gap-3 mb-6">
+                                        <div className="p-2 bg-gradient-to-r from-purple-500/20 to-purple-600/20 rounded-xl">
+                                            <Award size={24} className="text-purple-400" />
+                                        </div>
+                                        <h2 className="text-2xl font-bold text-white">Review & Publish</h2>
+                                    </div>
+
+                                    <div className="bg-gray-800/30 rounded-xl p-6 space-y-4">
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div>
+                                                <p className="text-sm text-gray-400">Event Name</p>
+                                                <p className="text-white font-semibold">{data.eventName}</p>
+                                            </div>
+                                            <div>
+                                                <p className="text-sm text-gray-400">Category</p>
+                                                <p className="text-white font-semibold">{data.eventCategory}</p>
+                                            </div>
+                                            <div>
+                                                <p className="text-sm text-gray-400">Date & Time</p>
+                                                <p className="text-white font-semibold">
+                                                    {data.startDate ? new Date(data.startDate).toLocaleString() : 'Not set'}
+                                                </p>
+                                            </div>
+                                            <div>
+                                                <p className="text-sm text-gray-400">Venue</p>
+                                                <p className="text-white font-semibold">{data.venueName}</p>
+                                            </div>
+                                            <div>
+                                                <p className="text-sm text-gray-400">Ticket Price</p>
+                                                <p className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-green-400 bg-clip-text text-transparent">
+                                                    ${data.ticketPrice || '0'}
+                                                </p>
+                                            </div>
+                                            <div>
+                                                <p className="text-sm text-gray-400">Max Attendees</p>
+                                                <p className="text-white font-semibold">{data.maxAttendees}</p>
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <p className="text-sm text-gray-400 mb-2">Description</p>
+                                            <p className="text-gray-300">{data.eventDescription}</p>
+                                        </div>
+                                    </div>
+
+                                    <div className="p-4 bg-gradient-to-r from-blue-500/10 to-green-500/10 rounded-xl border border-blue-500/30">
+                                        <div className="flex items-center gap-3">
+                                            <Zap size={20} className="text-yellow-400" />
+                                            <div>
+                                                <p className="font-semibold text-white">Ready to Publish?</p>
+                                                <p className="text-sm text-gray-300">Your event will be visible to all users once published.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Navigation Buttons */}
+                            <div className="pt-8 border-t border-gray-700/50">
+                                <div className="flex flex-col sm:flex-row gap-4">
+                                    {currentStep > 1 && (
+                                        <button
+                                            type="button"
+                                            onClick={prevStep}
+                                            className="flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-gray-800/50 backdrop-blur-sm text-gray-300 hover:text-white rounded-xl text-lg font-semibold hover:bg-gray-800/80 transition-all duration-300 border border-gray-700/50 hover:border-gray-600"
+                                        >
+                                            <ArrowLeft size={20} />
+                                            Previous
+                                        </button>
+                                    )}
+
+                                    {currentStep < steps.length ? (
+                                        <button
+                                            type="button"
+                                            onClick={nextStep}
+                                            className="flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-gradient-to-r from-blue-600 to-green-600 text-white rounded-xl text-lg font-semibold hover:opacity-90 transition-all duration-300 shadow-lg hover:shadow-blue-500/30"
+                                        >
+                                            Continue
+                                            <ArrowRight size={20} />
+                                        </button>
+                                    ) : (
+                                        <button
+                                            type="submit"
+                                            disabled={isLoading}
+                                            className="flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-gradient-to-r from-blue-600 via-green-600 to-yellow-500 text-white rounded-xl text-lg font-semibold hover:opacity-90 transition-all duration-300 shadow-lg hover:shadow-blue-500/30 disabled:opacity-50 disabled:cursor-not-allowed"
+                                        >
+                                            {isLoading ? (
+                                                <>
+                                                    <Loader2 size={20} className="animate-spin" />
+                                                    Publishing...
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <Award size={20} />
+                                                    Publish Event
+                                                    <CheckCircle size={20} className="opacity-0 group-hover:opacity-100 transition-opacity" />
+                                                </>
+                                            )}
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    {/* Validation Summary */}
+                    {Object.keys(errors).length > 0 && (
+                        <div className="mt-6 p-4 bg-gradient-to-r from-red-500/10 to-red-600/10 backdrop-blur-sm rounded-xl border border-red-500/30">
+                            <div className="flex items-center gap-3 mb-2">
+                                <AlertCircle size={20} className="text-red-400" />
+                                <h4 className="font-bold text-white">Please fix the following errors:</h4>
+                            </div>
+                            <ul className="text-sm text-gray-300 space-y-1 ml-8 list-disc">
+                                {Object.values(errors).map((error, index) => (
+                                    error && <li key={index}>{error}</li>
+                                ))}
+                            </ul>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

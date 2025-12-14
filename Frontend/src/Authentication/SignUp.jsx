@@ -1,7 +1,24 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Swal from 'sweetalert2';
-import Background3D from "../Components/Background3D";
+import {
+    User,
+    Mail,
+    Phone,
+    Lock,
+    UserPlus,
+    Sparkles,
+    Shield,
+    ArrowRight,
+    Loader2,
+    Eye,
+    EyeOff,
+    AlertCircle,
+    Facebook,
+    Github,
+    Twitter,
+    Award,
+} from 'lucide-react';
 
 const SignUp = () => {
     const [formData, setFormData] = useState({
@@ -11,9 +28,19 @@ const SignUp = () => {
         password: "",
         cpassword: ""
     });
+
     const [isLoading, setIsLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const [errors, setErrors] = useState({});
+    const [passwordStrength, setPasswordStrength] = useState(0);
     const navigate = useNavigate();
 
+    const socialProviders = [
+        { name: 'Facebook', icon: <Facebook size={20} />, color: 'hover:bg-blue-500/10 hover:border-blue-500/30', text: 'text-blue-400' },
+        { name: 'GitHub', icon: <Github size={20} />, color: 'hover:bg-gray-800/50 hover:border-gray-600/50', text: 'text-gray-400' },
+        { name: 'Twitter', icon: <Twitter size={20} />, color: 'hover:bg-sky-500/10 hover:border-sky-500/30', text: 'text-sky-400' },
+    ];
 
     // Password Strength State
     const [passwordStrength, setPasswordStrength] = useState({ msg: "", color: "" });
@@ -59,26 +86,72 @@ const SignUp = () => {
             return;
         }
 
-        if (formData.password !== formData.cpassword) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'Passwords do not match!',
-                background: '#1f2937',
-                color: '#fff',
-                confirmButtonColor: '#ef4444'
-            });
-            return;
-        }
+    const benefits = [
+        { icon: '🎯', text: 'Personalized event recommendations' },
+        { icon: '✨', text: 'Create and manage your own events' },
+        { icon: '🛡️', text: 'Secure ticket booking and payments' },
+        { icon: '📱', text: 'Mobile-friendly experience' },
+    ];
 
-        if (formData.mobile.length !== 10 || !/^\d+$/.test(formData.mobile)) {
+    const validateForm = () => {
+        const newErrors = {};
+
+        if (!formData.name.trim()) newErrors.name = "Full name is required";
+        else if (formData.name.length < 2) newErrors.name = "Name must be at least 2 characters";
+
+        if (!formData.email.trim()) newErrors.email = "Email is required";
+        else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) newErrors.email = "Invalid email format";
+
+        if (!formData.mobile.trim()) newErrors.mobile = "Mobile number is required";
+        else if (!/^\d{10}$/.test(formData.mobile)) newErrors.mobile = "Mobile number must be 10 digits";
+
+        if (!formData.password) newErrors.password = "Password is required";
+        else if (formData.password.length < 6) newErrors.password = "Password must be at least 6 characters";
+        else if (!/(?=.*[A-Z])(?=.*\d)/.test(formData.password)) newErrors.password = "Include at least one uppercase letter and one number";
+
+        if (!formData.cpassword) newErrors.cpassword = "Please confirm your password";
+        else if (formData.password !== formData.cpassword) newErrors.cpassword = "Passwords do not match";
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
+    const calculatePasswordStrength = (password) => {
+        let strength = 0;
+        if (password.length >= 6) strength += 25;
+        if (/[A-Z]/.test(password)) strength += 25;
+        if (/[0-9]/.test(password)) strength += 25;
+        if (/[^A-Za-z0-9]/.test(password)) strength += 25;
+        return strength;
+    };
+
+    const handlePasswordChange = (e) => {
+        const password = e.target.value;
+        setFormData({ ...formData, password });
+        setPasswordStrength(calculatePasswordStrength(password));
+
+        if (errors.password) setErrors({ ...errors, password: undefined });
+    };
+
+    const handleSignUp = async () => {
+        if (!validateForm()) {
             Swal.fire({
+                title: 'Validation Error',
+                html: `
+                    <div class="text-left">
+                        <p class="text-white mb-2">Please correct the following:</p>
+                        <ul class="list-disc pl-4 text-gray-300 space-y-1">
+                            ${Object.values(errors).map(error => `<li>${error}</li>`).join('')}
+                        </ul>
+                    </div>
+                `,
                 icon: 'error',
-                title: 'Oops...',
-                text: 'Please enter a valid 10-digit mobile number!',
                 background: '#1f2937',
                 color: '#fff',
-                confirmButtonColor: '#ef4444'
+                confirmButtonColor: '#ef4444',
+                customClass: {
+                    popup: 'rounded-2xl border border-red-500/30'
+                }
             });
             return;
         }
@@ -88,9 +161,7 @@ const SignUp = () => {
         try {
             let res = await fetch("http://localhost:7120/user/Signup", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     name: formData.name,
                     email: formData.email,
@@ -101,14 +172,27 @@ const SignUp = () => {
 
             if (res.ok) {
                 Swal.fire({
+                    title: 'Account Created Successfully!',
+                    html: `
+                        <div class="text-center">
+                            <div class="mb-4 text-5xl">🎉</div>
+                            <p class="text-white mb-2">Welcome to EventHub!</p>
+                            <p class="text-gray-300">Your account has been created successfully.</p>
+                            <p class="text-sm text-gray-400 mt-4">Redirecting to login...</p>
+                        </div>
+                    `,
                     icon: 'success',
-                    title: 'Success!',
-                    text: 'Account created successfully!',
                     background: '#1f2937',
                     color: '#fff',
-                    confirmButtonColor: '#4f46e5'
+                    confirmButtonColor: '#10b981',
+                    timer: 3000,
+                    showConfirmButton: false,
+                    customClass: {
+                        popup: 'rounded-2xl border border-emerald-500/30'
+                    }
+                }).then(() => {
+                    navigate("/login");
                 });
-                navigate("/login");
             } else {
                 let errorData = await res.json();
                 throw new Error(errorData.message || "Failed to create account");
@@ -116,113 +200,286 @@ const SignUp = () => {
         } catch (e) {
             console.error(e);
             Swal.fire({
+                title: 'Registration Failed',
+                text: e.message || 'Something went wrong. Please try again.',
                 icon: 'error',
-                title: 'Oops...',
-                text: e.message || 'Something went wrong. Please try again later.',
                 background: '#1f2937',
                 color: '#fff',
-                confirmButtonColor: '#ef4444'
+                confirmButtonColor: '#ef4444',
+                customClass: {
+                    popup: 'rounded-2xl border border-red-500/30'
+                }
             });
         } finally {
             setIsLoading(false);
         }
     };
 
-    // Handle Enter key press for form submission
     const handleKeyPress = (e) => {
-        if (e.key === 'Enter') {
-            handleSignUp();
-        }
+        if (e.key === 'Enter') handleSignUp();
+    };
+
+    const inputClasses = "w-full bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500/50 transition-all duration-300";
+    const errorInputClasses = "w-full bg-gray-800/50 backdrop-blur-sm border border-red-500/50 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500/50 transition-all duration-300";
+    const errorMessageClasses = "text-red-400 text-sm mt-2 flex items-center gap-2";
+
+    const getStrengthColor = (strength) => {
+        if (strength < 50) return "from-red-500 to-red-600";
+        if (strength < 75) return "from-yellow-500 to-yellow-600";
+        return "from-green-500 to-green-600";
     };
 
     return (
-        <div className="min-h-screen relative">
-            <Background3D />
-            <div className="relative z-10 min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8">
-                <div className="max-w-md w-full space-y-8 bg-gray-900/60 backdrop-blur-md border border-gray-700/50 rounded-3xl p-8 md:p-12 shadow-2xl">
-                    <div>
-                        <h2 className="mt-6 text-center text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">
-                            Create your account
-                        </h2>
-                        <p className="mt-2 text-center text-sm text-gray-400">
-                            Join us today! Please fill in your details
-                        </p>
+        <div className="min-h-screen relative bg-gradient-to-br from-gray-900 via-gray-900 to-black text-white">
+            <div className="relative z-10 min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 py-8">
+                <div className="max-w-6xl w-full grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    {/* Left Side - Benefits */}
+                    <div className="hidden lg:flex flex-col justify-center">
+                        <div className="bg-gradient-to-br from-gray-800/40 to-gray-900/40 backdrop-blur-xl rounded-3xl border border-gray-700/50 p-8 shadow-2xl">
+                            <div className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-500/20 to-green-500/20 px-4 py-2 rounded-full mb-6">
+                                <Sparkles size={16} className="text-yellow-400" />
+                                <span className="text-sm font-medium bg-gradient-to-r from-blue-400 to-green-400 bg-clip-text text-transparent">
+                                    Join Our Community
+                                </span>
+                            </div>
+
+                            <h1 className="text-4xl font-bold mb-4">
+                                <span className="bg-gradient-to-r from-blue-400 via-green-400 to-yellow-400 bg-clip-text text-transparent">
+                                    Create Your Account
+                                </span>
+                            </h1>
+
+                            <p className="text-gray-400 mb-8 leading-relaxed">
+                                Join thousands of event enthusiasts, organizers, and creators. Discover amazing events, create your own, and build unforgettable experiences.
+                            </p>
+
+                            <div className="space-y-4 mb-8">
+                                {benefits.map((benefit, index) => (
+                                    <div key={index} className="flex items-center gap-3">
+                                        <div className="p-2 bg-gradient-to-r from-blue-500/10 to-green-500/10 rounded-lg">
+                                            <span className="text-lg">{benefit.icon}</span>
+                                        </div>
+                                        <span className="text-gray-300">{benefit.text}</span>
+                                    </div>
+                                ))}
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-4 mb-8">
+                                <div className="bg-gradient-to-br from-blue-500/20 to-blue-600/20 backdrop-blur-sm rounded-xl p-4 border border-blue-500/30">
+                                    <div className="text-2xl font-bold text-white mb-1">50K+</div>
+                                    <div className="text-xs text-gray-300">Active Users</div>
+                                </div>
+                                <div className="bg-gradient-to-br from-green-500/20 to-green-600/20 backdrop-blur-sm rounded-xl p-4 border border-green-500/30">
+                                    <div className="text-2xl font-bold text-white mb-1">2K+</div>
+                                    <div className="text-xs text-gray-300">Events Monthly</div>
+                                </div>
+                            </div>
+
+                            <div className="p-4 bg-gradient-to-r from-yellow-500/10 to-yellow-600/10 rounded-xl border border-yellow-500/30">
+                                <div className="flex items-center gap-3">
+                                    <Award size={20} className="text-yellow-400" />
+                                    <div>
+                                        <p className="font-semibold text-white">Premium Features</p>
+                                        <p className="text-sm text-gray-300">Get access to exclusive events and early bird offers</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div className="mt-8 space-y-6" onKeyPress={handleKeyPress}>
-                        <div className="rounded-md shadow-sm space-y-4">
-                            <div className="relative group">
-                                <label htmlFor="full-name" className="sr-only">Full Name</label>
-                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <svg className="h-5 w-5 text-gray-400 group-focus-within:text-indigo-500 transition-colors duration-200" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                        <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
-                                    </svg>
+
+                    {/* Right Side - Sign Up Form */}
+                    <div className="bg-gradient-to-br from-gray-800/40 to-gray-900/40 backdrop-blur-xl rounded-3xl border border-gray-700/50 p-6 sm:p-8 shadow-2xl">
+                        <div className="text-center mb-8">
+                            <div className="flex items-center justify-center gap-3 mb-4">
+                                <div className="p-2 bg-gradient-to-r from-blue-500/20 to-blue-600/20 rounded-xl">
+                                    <UserPlus size={24} className="text-blue-400" />
                                 </div>
-                                <input
-                                    id="full-name"
-                                    name="fullName"
-                                    type="text"
-                                    required
-                                    value={formData.name}
-                                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                    className="appearance-none rounded-lg block w-full pl-10 px-5 py-3 bg-gray-700/50 border border-gray-600 placeholder-gray-400 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent focus:bg-gray-700 transition-all duration-200 sm:text-lg"
-                                    placeholder="Full Name"
-                                    aria-describedby="name-help"
-                                />
-                                <div id="name-help" className="sr-only">Enter your full name</div>
+                                <h2 className="text-3xl font-bold text-white">Sign Up</h2>
+                            </div>
+                            <p className="text-gray-400">Create your account in minutes</p>
+                        </div>
+
+                        {/* Social Sign Up */}
+                        <div className="mb-6">
+                            <p className="text-sm text-gray-400 text-center mb-4">Sign up with</p>
+                            <div className="grid grid-cols-2 gap-3">
+                                {socialProviders.map(provider => (
+                                    <button
+                                        key={provider.name}
+                                        className={`flex items-center justify-center gap-2 p-3 bg-gray-800/30 backdrop-blur-sm rounded-xl border border-gray-700/50 ${provider.color} transition-all duration-300`}
+                                    >
+                                        <span className={provider.text}>{provider.icon}</span>
+                                        <span className="text-sm text-gray-300">{provider.name}</span>
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className="relative mb-6">
+                            <div className="absolute inset-0 flex items-center">
+                                <div className="w-full border-t border-gray-700/50"></div>
+                            </div>
+                            <div className="relative flex justify-center text-sm">
+                                <span className="px-4 bg-gradient-to-br from-gray-800/40 to-gray-900/40 text-gray-400">Or with email</span>
+                            </div>
+                        </div>
+
+                        <div className="space-y-6" onKeyPress={handleKeyPress}>
+                            {/* Name Input */}
+                            <div>
+                                <label className="text-sm font-medium text-gray-300 mb-2 flex items-center gap-2">
+                                    <User size={16} />
+                                    Full Name
+                                </label>
+                                <div className="relative">
+                                    <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+                                    <input
+                                        type="text"
+                                        value={formData.name}
+                                        onChange={(e) => {
+                                            setFormData({ ...formData, name: e.target.value });
+                                            if (errors.name) setErrors({ ...errors, name: undefined });
+                                        }}
+                                        className={`pl-10 ${errors.name ? errorInputClasses : inputClasses}`}
+                                        placeholder="John Doe"
+                                    />
+                                </div>
+                                {errors.name && (
+                                    <p className={errorMessageClasses}>
+                                        <AlertCircle size={14} />
+                                        {errors.name}
+                                    </p>
+                                )}
                             </div>
 
-                            <div className="relative group">
-                                <label htmlFor="email-address" className="sr-only">Email address</label>
-                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <svg className="h-5 w-5 text-gray-400 group-focus-within:text-indigo-500 transition-colors duration-200" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                        <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
-                                        <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
-                                    </svg>
+                            {/* Email Input */}
+                            <div>
+                                <label className="text-sm font-medium text-gray-300 mb-2 flex items-center gap-2">
+                                    <Mail size={16} />
+                                    Email Address
+                                </label>
+                                <div className="relative">
+                                    <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+                                    <input
+                                        type="email"
+                                        value={formData.email}
+                                        onChange={(e) => {
+                                            setFormData({ ...formData, email: e.target.value });
+                                            if (errors.email) setErrors({ ...errors, email: undefined });
+                                        }}
+                                        className={`pl-10 ${errors.email ? errorInputClasses : inputClasses}`}
+                                        placeholder="you@example.com"
+                                    />
                                 </div>
-                                <input
-                                    id="email-address"
-                                    name="email"
-                                    type="email"
-                                    autoComplete="email"
-                                    required
-                                    value={formData.email}
-                                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                    className="appearance-none rounded-lg block w-full pl-10 px-5 py-3 bg-gray-700/50 border border-gray-600 placeholder-gray-400 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent focus:bg-gray-700 transition-all duration-200 sm:text-lg"
-                                    placeholder="Email address"
-                                    aria-describedby="email-help"
-                                />
-                                <div id="email-help" className="sr-only">Enter your email address</div>
+                                {errors.email && (
+                                    <p className={errorMessageClasses}>
+                                        <AlertCircle size={14} />
+                                        {errors.email}
+                                    </p>
+                                )}
                             </div>
 
-                            <div className="relative group">
-                                <label htmlFor="mobile-number" className="sr-only">Mobile Number</label>
-                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <svg className="h-5 w-5 text-gray-400 group-focus-within:text-indigo-500 transition-colors duration-200" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                        <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
-                                    </svg>
+                            {/* Mobile Input */}
+                            <div>
+                                <label className="text-sm font-medium text-gray-300 mb-2 flex items-center gap-2">
+                                    <Phone size={16} />
+                                    Mobile Number
+                                </label>
+                                <div className="relative">
+                                    <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+                                    <input
+                                        type="tel"
+                                        value={formData.mobile}
+                                        onChange={(e) => {
+                                            const value = e.target.value.replace(/\D/g, '').substring(0, 10);
+                                            setFormData({ ...formData, mobile: value });
+                                            if (errors.mobile) setErrors({ ...errors, mobile: undefined });
+                                        }}
+                                        className={`pl-10 ${errors.mobile ? errorInputClasses : inputClasses}`}
+                                        placeholder="1234567890"
+                                    />
                                 </div>
-                                <input
-                                    id="mobile-number"
-                                    name="mobileNumber"
-                                    type="tel"
-                                    pattern="[0-9]{10}"
-                                    required
-                                    value={formData.mobile}
-                                    onChange={(e) => setFormData({ ...formData, mobile: e.target.value })}
-                                    className="appearance-none rounded-lg block w-full pl-10 px-5 py-3 bg-gray-700/50 border border-gray-600 placeholder-gray-400 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent focus:bg-gray-700 transition-all duration-200 sm:text-lg"
-                                    placeholder="Mobile Number"
-                                    aria-describedby="mobile-help"
-                                />
-                                <div id="mobile-help" className="sr-only">Enter your 10-digit mobile number</div>
+                                {errors.mobile && (
+                                    <p className={errorMessageClasses}>
+                                        <AlertCircle size={14} />
+                                        {errors.mobile}
+                                    </p>
+                                )}
                             </div>
 
-                            <div className="relative group">
-                                <label htmlFor="password" className="sr-only">Password</label>
-                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <svg className="h-5 w-5 text-gray-400 group-focus-within:text-indigo-500 transition-colors duration-200" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                        <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
-                                    </svg>
+                            {/* Password Input */}
+                            <div>
+                                <label className="text-sm font-medium text-gray-300 mb-2 flex items-center gap-2">
+                                    <Lock size={16} />
+                                    Password
+                                </label>
+                                <div className="relative">
+                                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+                                    <input
+                                        type={showPassword ? "text" : "password"}
+                                        value={formData.password}
+                                        onChange={handlePasswordChange}
+                                        className={`pl-10 pr-10 ${errors.password ? errorInputClasses : inputClasses}`}
+                                        placeholder="Create a strong password"
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowPassword(!showPassword)}
+                                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
+                                    >
+                                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                    </button>
                                 </div>
+
+                                {/* Password Strength */}
+                                {formData.password && (
+                                    <div className="mt-2">
+                                        <div className="flex justify-between items-center mb-1">
+                                            <span className="text-xs text-gray-400">Password strength</span>
+                                            <span className="text-xs font-medium">{passwordStrength}%</span>
+                                        </div>
+                                        <div className="h-2 bg-gray-700/50 rounded-full overflow-hidden">
+                                            <div
+                                                className={`h-full bg-gradient-to-r ${getStrengthColor(passwordStrength)} transition-all duration-300`}
+                                                style={{ width: `${passwordStrength}%` }}
+                                            ></div>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {errors.password && (
+                                    <p className={errorMessageClasses}>
+                                        <AlertCircle size={14} />
+                                        {errors.password}
+                                    </p>
+                                )}
+                            </div>
+
+                            {/* Confirm Password */}
+                            <div>
+                                <label className="text-sm font-medium text-gray-300 mb-2 flex items-center gap-2">
+                                    <Lock size={16} />
+                                    Confirm Password
+                                </label>
+                                <div className="relative">
+                                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+                                    <input
+                                        type={showConfirmPassword ? "text" : "password"}
+                                        value={formData.cpassword}
+                                        onChange={(e) => {
+                                            setFormData({ ...formData, cpassword: e.target.value });
+                                            if (errors.cpassword) setErrors({ ...errors, cpassword: undefined });
+                                        }}
+                                        className={`pl-10 pr-10 ${errors.cpassword ? errorInputClasses : inputClasses}`}
+                                        placeholder="Confirm your password"
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
+                                    >
+                                        {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                    </button>
                                 <input
                                     id="password"
                                     name="password"
@@ -258,56 +515,71 @@ const SignUp = () => {
                                         <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
                                     </svg>
                                 </div>
+                                {errors.cpassword && (
+                                    <p className={errorMessageClasses}>
+                                        <AlertCircle size={14} />
+                                        {errors.cpassword}
+                                    </p>
+                                )}
+                            </div>
+
+                            {/* Terms & Conditions */}
+                            <div className="flex items-start p-4 bg-gray-800/30 rounded-xl">
                                 <input
-                                    id="confirm-password"
-                                    name="confirmPassword"
-                                    type="password"
-                                    value={formData.cpassword}
-                                    autoComplete="new-password"
+                                    id="terms"
+                                    type="checkbox"
                                     required
-                                    onChange={(e) => setFormData({ ...formData, cpassword: e.target.value })}
-                                    className="appearance-none rounded-lg block w-full pl-10 px-5 py-3 bg-gray-700/50 border border-gray-600 placeholder-gray-400 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent focus:bg-gray-700 transition-all duration-200 sm:text-lg"
-                                    placeholder="Confirm Password"
-                                    aria-describedby="confirm-password-help"
+                                    className="h-4 w-4 text-blue-500 focus:ring-blue-500 border-gray-600 rounded bg-gray-700/50 mt-1"
                                 />
-                                <div id="confirm-password-help" className="sr-only">Confirm your password</div>
+                                <label htmlFor="terms" className="ml-2 text-sm text-gray-300">
+                                    I agree to the <a href="#" className="text-blue-400 hover:text-blue-300">Terms of Service</a> and <a href="#" className="text-blue-400 hover:text-blue-300">Privacy Policy</a>. I understand that my data will be processed securely.
+                                </label>
+                            </div>
+
+                            {/* Sign Up Button */}
+                            <button
+                                onClick={handleSignUp}
+                                disabled={isLoading}
+                                className="group w-full flex items-center justify-center gap-3 px-8 py-4 bg-gradient-to-r from-blue-600 via-green-600 to-yellow-500 text-white font-bold rounded-2xl hover:opacity-90 transition-all duration-300 shadow-lg hover:shadow-blue-500/30 disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                {isLoading ? (
+                                    <>
+                                        <Loader2 size={20} className="animate-spin" />
+                                        Creating Account...
+                                    </>
+                                ) : (
+                                    <>
+                                        <UserPlus size={20} />
+                                        Create Account
+                                        <ArrowRight size={20} className="group-hover:translate-x-2 transition-transform" />
+                                    </>
+                                )}
+                            </button>
+
+                            {/* Login Link */}
+                            <div className="text-center pt-6 border-t border-gray-700/50">
+                                <p className="text-gray-400">
+                                    Already have an account?{' '}
+                                    <Link
+                                        to="/login"
+                                        className="font-medium text-blue-400 hover:text-blue-300 transition-colors group inline-flex items-center gap-1"
+                                    >
+                                        <span>Sign in</span>
+                                        <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                                    </Link>
+                                </p>
                             </div>
                         </div>
 
-                        <div>
-                            <button
-                                type="button"
-                                onClick={handleSignUp}
-                                disabled={isLoading}
-                                className={`group relative w-full flex justify-center py-4 px-6 border border-transparent text-lg font-bold rounded-lg text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transform transition-all duration-200 shadow-lg hover:shadow-indigo-500/30 ${isLoading ? 'opacity-75 cursor-not-allowed' : 'hover:scale-[1.02]'}`}
-                                aria-busy={isLoading}
-                                aria-describedby="signup-button-help"
-                            >
-                                <span className="absolute left-0 inset-y-0 flex items-center pl-3">
-                                    {isLoading ? (
-                                        <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden="true">
-                                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                        </svg>
-                                    ) : (
-                                        <svg className="h-5 w-5 text-indigo-300 group-hover:text-indigo-200 transition-colors duration-200" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                            <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
-                                        </svg>
-                                    )}
-                                </span>
-                                {isLoading ? 'Processing...' : 'Sign Up'}
-                            </button>
-                            <div id="signup-button-help" className="sr-only">Click to sign up or press Enter</div>
-                        </div>
-                        <div className="text-center mt-6">
-                            <p className="text-gray-400">
-                                Already have an account?{' '}
-                                <Link
-                                    to="/login"
-                                    className="font-medium text-indigo-400 hover:text-indigo-300 transition-colors duration-200 hover:underline focus:outline-none focus:ring-2 focus:ring-indigo-500 rounded">
-                                    Log in
-                                </Link>
-                            </p>
+                        {/* Security Note */}
+                        <div className="mt-8 p-4 bg-gradient-to-r from-blue-500/10 to-green-500/10 rounded-xl border border-blue-500/30">
+                            <div className="flex items-center gap-3">
+                                <Shield size={20} className="text-green-400" />
+                                <div>
+                                    <p className="font-semibold text-white">Secure Registration</p>
+                                    <p className="text-sm text-gray-300">Your information is protected with industry-standard encryption</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

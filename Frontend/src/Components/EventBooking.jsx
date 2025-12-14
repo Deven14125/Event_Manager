@@ -1,15 +1,36 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import {
+    Calendar,
+    MapPin,
+    Clock,
+    DollarSign,
+    Building,
+    User,
+    Globe,
+    CreditCard,
+    Sparkles,
+    ArrowRight,
+    Calculator,
+    Shield,
+    CheckCircle,
+    AlertCircle,
+    ChevronDown,
+    Receipt,
+    Wallet,
+    Banknote,
+    Smartphone
+} from 'lucide-react';
 
 const EventBooking = () => {
     const navigate = useNavigate();
 
     const [formData, setFormData] = useState({
-        address: '',
         venueName: '',
+        address: '',
         bookingStartDate: '',
-        bookingTime: '', // Optional: User can choose a time
-        fare: "", // Default fare for 2 days
+        bookingTime: '',
+        fare: "",
         platformOwner: '',
         city: '',
         state: '',
@@ -17,15 +38,17 @@ const EventBooking = () => {
         paymentOption: ''
     });
 
+    const [errors, setErrors] = useState({});
     const [cities, setCities] = useState([]);
+    const [isCalculating, setIsCalculating] = useState(false);
 
     // States and corresponding cities of India
     const statesAndCities = {
         Maharashtra: [
             'Mumbai', 'Pune', 'Nagpur', 'Nashik', 'Aurangabad', 'Thane', 'Kolhapur', 'Solapur', 'Akola', 'Jalgaon', 'Amravati',
             'Ratnagiri', 'Satara', 'Sindhudurg', 'Parbhani', 'Yavatmal', 'Jalna', 'Bhandara', 'Wardha', 'Gadchiroli', 'Chandrapur',
-            'Hingoli', 'Latur', 'Osmanabad', 'Beed', 'Dhule', 'Nandurbar', 'Washim', 'Buldhana', 'Palghar', 'Ratnagiri', 'Bhiwandi',
-            'Navi Mumbai', 'Ulhasnagar', 'Vasai-Virar', 'Ambarnath', 'Matheran', 'Kalyan-Dombivli', 'Thane', 'Chinchwad', 'Nandgaon'
+            'Hingoli', 'Latur', 'Osmanabad', 'Beed', 'Dhule', 'Nandurbar', 'Washim', 'Buldhana', 'Palghar', 'Bhiwandi',
+            'Navi Mumbai', 'Ulhasnagar', 'Vasai-Virar', 'Ambarnath', 'Matheran', 'Kalyan-Dombivli', 'Chinchwad', 'Nandgaon'
         ],
         Delhi: [
             'New Delhi', 'Noida', 'Gurgaon', 'Faridabad', 'Ghaziabad', 'Delhi Cantonment', 'Shahdara', 'Dwarka', 'Karol Bagh',
@@ -35,287 +58,455 @@ const EventBooking = () => {
         TamilNadu: [
             'Chennai', 'Coimbatore', 'Madurai', 'Tiruchirappalli', 'Salem', 'Tirunelveli', 'Erode', 'Vellore', 'Dindigul',
             'Thanjavur', 'Theni', 'Ramanathapuram', 'Cuddalore', 'Arakkonam', 'Kanchipuram', 'Karaikal', 'Chidambaram', 'Tiruvarur',
-            'Kovilpatti', 'Virudhunagar', 'Tiruppur', 'Vikramshila', 'Kanchipuram', 'Vandalur', 'Tiruvallur', 'Perambalur', 'Pollachi'
+            'Kovilpatti', 'Virudhunagar', 'Tiruppur', 'Vikramshila', 'Vandalur', 'Tiruvallur', 'Perambalur', 'Pollachi'
         ],
         Karnataka: [
             'Bangalore', 'Mysore', 'Mangalore', 'Hubli', 'Dharwad', 'Bellary', 'Chitradurga', 'Udupi', 'Tumkur', 'Bagalkot',
             'Chikkamagaluru', 'Bijapur', 'Kolar', 'Hassan', 'Mandya', 'Raichur', 'Chamarajanagar', 'Gulbarga', 'Yadgir', 'Koppal',
-            'Haveri', 'Shivamogga', 'Bagalkot', 'Udupi', 'Madikeri', 'Channarayapatna', 'Channarayapatna', 'Srinivaspura', 'Bidar',
-            'Ramnagara', 'Channarayapatna', 'Byadgi'
+            'Haveri', 'Shivamogga', 'Madikeri', 'Channarayapatna', 'Srinivaspura', 'Bidar', 'Ramnagara', 'Byadgi'
         ],
         Gujarat: [
             'Ahmedabad', 'Surat', 'Vadodara', 'Rajkot', 'Bhavnagar', 'Gandhinagar', 'Junagadh', 'Anand', 'Vapi', 'Nadiad', 'Mehsana',
             'Valsad', 'Morbi', 'Navsari', 'Veraval', 'Bharuch', 'Dahej', 'Godhra', 'Modasa', 'Patan', 'Panchmahal', 'Daman', 'Dahod',
-            'Porbandar', 'Palitana', 'Jamnagar', 'Bhuj', 'Kutch', 'Gandhidham', 'Bhavnagar', 'Mandvi', 'Palanpur', 'Vapi', 'Nadiad'
+            'Porbandar', 'Palitana', 'Jamnagar', 'Bhuj', 'Kutch', 'Gandhidham', 'Mandvi', 'Palanpur'
         ],
         UttarPradesh: [
             'Lucknow', 'Kanpur', 'Agra', 'Varanasi', 'Ghaziabad', 'Meerut', 'Allahabad', 'Mathura', 'Noida', 'Aligarh', 'Bareilly',
             'Jhansi', 'Moradabad', 'Rampur', 'Firozabad', 'Shahjahanpur', 'Azamgarh', 'Bijnor', 'Saharanpur', 'Muzaffarnagar', 'Unnao',
-            'Deoria', 'Ballia', 'Gorakhpur', 'Budaun', 'Sitapur', 'Bijnor', 'Etawah', 'Jalaun', 'Kannauj', 'Pratapgarh', 'Rae Bareli',
-            'Banda', 'Mahoba', 'Etah', 'Shahjahanpur', 'Aligarh', 'Sultanpur'
+            'Deoria', 'Ballia', 'Gorakhpur', 'Budaun', 'Sitapur', 'Etawah', 'Jalaun', 'Kannauj', 'Pratapgarh', 'Rae Bareli',
+            'Banda', 'Mahoba', 'Etah', 'Aligarh', 'Sultanpur'
         ],
         Rajasthan: [
             'Jaipur', 'Udaipur', 'Jodhpur', 'Kota', 'Bikaner', 'Ajmer', 'Alwar', 'Sikar', 'Churu', 'Pali', 'Sawai Madhopur',
             'Jhunjhunu', 'Barmer', 'Nagaur', 'Bundi', 'Dholpur', 'Jhalawar', 'Tonk', 'Sirohi', 'Rajsamand', 'Bhilwara', 'Banswara',
-            'Chittorgarh', 'Jaisalmer', 'Hanumangarh', 'Jalore', 'Sri Ganganagar', 'Dausa', 'Bharatpur', 'Churu', 'Nimbahera'
-        ],
-        Punjab: [
-            'Chandigarh', 'Amritsar', 'Ludhiana', 'Jalandhar', 'Patiala', 'Bathinda', 'Mohali', 'Rupnagar', 'Moga', 'Firozpur',
-            'Hoshiarpur', 'Gurdaspur', 'Pathankot', 'Kapurthala', 'Fatehgarh Sahib', 'Sangrur', 'Barnala', 'Mansa', 'Abohar', 'Bikram',
-            'Patiala', 'Samrala', 'Sultanpur Lodhi'
-        ],
-        WestBengal: [
-            'Kolkata', 'Howrah', 'Siliguri', 'Durgapur', 'Asansol', 'Kolkata Suburbs', 'Murshidabad', 'Malda', 'Kolar', 'Jalpaiguri',
-            'Burdwan', 'Kolar', 'Bongaigaon', 'Hooghly', 'Purulia', 'Bankura', 'Alambazar', 'Haldia', 'Kalyani', 'Nadia', 'Ranaghat',
-            'Tamluk', 'Kolkata South', 'Kolkata North', 'Sodepur', 'Dumdum'
-        ],
-        AndhraPradesh: [
-            'Visakhapatnam', 'Vijayawada', 'Guntur', 'Tirupati', 'Rajahmundry', 'Kakinada', 'Nellore', 'Chittoor', 'Anantapur',
-            'Kadapa', 'Eluru', 'Bhimavaram', 'Chirala', 'Machilipatnam', 'Nandyal', 'Kurnool', 'Ongole', 'Tadepalligudem', 'Srikakulam',
-            'Tirumala', 'Peddapalli', 'Palamaner'
-        ],
-        Telangana: [
-            'Hyderabad', 'Warangal', 'Khammam', 'Karimnagar', 'Nizamabad', 'Nellore', 'Mahabubnagar', 'Rangareddy', 'Suryapet',
-            'Adilabad', 'Bhongir', 'Khammam', 'Medak', 'Vikarabad', 'Mahabubabad', 'Mancherial', 'Miryalaguda', 'Nalgonda', 'Sircilla'
-        ],
-        Kerala: [
-            'Thiruvananthapuram', 'Kochi', 'Kozhikode', 'Kottayam', 'Thrissur', 'Malappuram', 'Palakkad', 'Kannur', 'Alappuzha',
-            'Pathanamthitta', 'Idukki', 'Wayanad', 'Ernakulam', 'Kollam', 'Varkala', 'Punalur', 'Attingal', 'Perumbavoor', 'Muvattupuzha',
-            'Kottakkal', 'Kochi', 'Sreekariyam', 'Kochi South', 'Changanassery'
-        ],
-        MadhyaPradesh: [
-            'Bhopal', 'Indore', 'Gwalior', 'Jabalpur', 'Ujjain', 'Ratlam', 'Sagar', 'Rewa', 'Katni', 'Dewas', 'Vidisha', 'Shivpuri',
-            'Satna', 'Chhindwara', 'Burhanpur', 'Betul', 'Shahdol', 'Sehore', 'Chhatarpur', 'Neemuch', 'Shahjapur', 'Hoshangabad', 'Biaora'
-        ],
-        Bihar: [
-            'Patna', 'Gaya', 'Bhagalpur', 'Muzzafarpur', 'Purnia', 'Arrah', 'Buxar', 'Nalanda', 'Katihar', 'Darbhanga', 'Hajipur',
-            'Samastipur', 'Motihari', 'Chhapra', 'Sitamarhi', 'Munger', 'Bhagalpur', 'Lakhisarai', 'Begusarai', 'Siwan', 'Jamui',
-            'Khagaria'
+            'Chittorgarh', 'Jaisalmer', 'Hanumangarh', 'Jalore', 'Sri Ganganagar', 'Dausa', 'Bharatpur'
         ]
     };
 
+    const paymentOptions = [
+        { value: 'creditCard', label: 'Credit Card', icon: <CreditCard size={20} />, color: 'text-blue-400' },
+        { value: 'debitCard', label: 'Debit Card', icon: <CreditCard size={20} />, color: 'text-green-400' },
+        { value: 'onlineBanking', label: 'Online Banking', icon: <Banknote size={20} />, color: 'text-purple-400' },
+        { value: 'upi', label: 'UPI Payment', icon: <Smartphone size={20} />, color: 'text-yellow-400' },
+        { value: 'paypal', label: 'PayPal', icon: <Wallet size={20} />, color: 'text-cyan-400' },
+    ];
 
-    // Fare calculation logic based on the number of days
     const calculateTotalFare = (startDate) => {
-        const start = new Date(startDate);
-        const today = new Date();
-        const differenceInDays = Math.max(1, Math.ceil((start - today) / (1000 * 3600 * 24))); // Minimum of 1 day
+        if (!startDate) return 0;
 
-        const totalFare = 1000 * differenceInDays; // 1000 per day
-        return totalFare;
+        try {
+            const [day, month, year] = startDate.split('/').map(Number);
+            const start = new Date(year, month - 1, day);
+            const today = new Date();
+
+            if (isNaN(start.getTime())) return 0;
+
+            const differenceInTime = start.getTime() - today.getTime();
+            const differenceInDays = Math.ceil(differenceInTime / (1000 * 3600 * 24));
+
+            return Math.max(1, differenceInDays) * 1000;
+        } catch (error) {
+            console.log(error)
+            return 0;
+        }
+    };
+
+    const validateForm = () => {
+        const newErrors = {};
+
+        if (!formData.venueName.trim()) newErrors.venueName = "Venue name is required";
+        if (!formData.address.trim()) newErrors.address = "Address is required";
+        if (!formData.bookingStartDate.trim()) newErrors.bookingStartDate = "Booking date is required";
+        if (!formData.platformOwner.trim()) newErrors.platformOwner = "Venue organizer is required";
+        if (!formData.state) newErrors.state = "Please select a state";
+        if (!formData.city) newErrors.city = "Please select a city";
+        if (!formData.paymentOption) newErrors.paymentOption = "Please select a payment option";
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
     };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
 
-        // Update form data
-        setFormData({
-            ...formData,
-            [name]: value
-        });
+        const updatedData = { ...formData, [name]: value };
+        setFormData(updatedData);
 
-        // Update cities if state changes
-        if (name === 'state') {
-            setCities(statesAndCities[value] || []);
+        if (errors[name]) {
+            setErrors(prev => ({ ...prev, [name]: undefined }));
         }
 
-        // Update fare when booking start date changes
+        if (name === 'state') {
+            setCities(statesAndCities[value] || []);
+            setFormData(prev => ({ ...prev, city: '' }));
+        }
+
         if (name === 'bookingStartDate') {
-            const totalFare = calculateTotalFare(value);
-            setFormData({
-                ...formData,
-                fare: totalFare
-            });
+            setIsCalculating(true);
+            setTimeout(() => {
+                const totalFare = calculateTotalFare(value);
+                setFormData(prev => ({ ...prev, fare: totalFare }));
+                setIsCalculating(false);
+            }, 500);
         }
     };
 
     const handleSubmit = () => {
-        // Navigate to payment page after form submission
+        if (!validateForm()) {
+            return;
+        }
+
         navigate('/payment', { state: formData });
     };
 
+    const inputClasses = "w-full bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500/50 transition-all duration-300";
+    const errorInputClasses = "w-full bg-gray-800/50 backdrop-blur-sm border border-red-500/50 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500/50 transition-all duration-300";
+    const labelClasses = "block text-sm font-medium text-gray-300 mb-2 flex items-center gap-2";
+    const errorMessageClasses = "text-red-400 text-sm mt-2 flex items-center gap-2";
+
     return (
-        <div className="min-h-screen bg-gradient-to-r from-blue-100 to-indigo-200 flex justify-center items-center py-8">
-            <div className="max-w-2xl w-full bg-white shadow-xl rounded-lg p-6 md:p-8">
-                <h2 className="text-3xl font-semibold text-center text-indigo-800 mb-6">Event Booking</h2>
-                <div className="space-y-5">
-                    {/* Venue Name */}
-                    <div>
-                        <label htmlFor="venueName" className="block text-sm font-medium text-gray-700">Venue Name</label>
-                        <input
-                            type="text"
-                            id="venueName"
-                            name="venueName"
-                            value={formData.venueName}
-                            onChange={handleChange}
-                            className="w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-indigo-500"
-                            required
-                        />
+        <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-900 to-black text-white overflow-hidden">
+            {/* Animated Background */}
+            <div className="absolute inset-0 overflow-hidden">
+                <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl"></div>
+                <div className="absolute bottom-40 -left-20 w-80 h-80 bg-green-500/10 rounded-full blur-3xl"></div>
+                <div className="absolute top-1/2 right-1/4 w-60 h-60 bg-yellow-500/10 rounded-full blur-3xl"></div>
+            </div>
+
+            <div className="relative z-10 pt-24 pb-12 px-4 sm:px-6 lg:px-8">
+                <div className="max-w-3xl mx-auto">
+                    {/* Header */}
+                    <div className="text-center mb-12">
+                        <div className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-500/20 to-green-500/20 px-4 py-2 rounded-full mb-6">
+                            <Sparkles size={16} className="text-yellow-400" />
+                            <span className="text-sm font-medium bg-gradient-to-r from-blue-400 to-green-400 bg-clip-text text-transparent">
+                                Book Your Venue
+                            </span>
+                        </div>
+
+                        <h1 className="text-4xl sm:text-5xl font-bold mb-4">
+                            <span className="block bg-gradient-to-r from-blue-400 via-green-400 to-yellow-400 bg-clip-text text-transparent">
+                                Event Booking
+                            </span>
+                        </h1>
+                        <p className="text-gray-400 text-lg">
+                            Fill in the details to book your perfect event venue
+                        </p>
                     </div>
 
-                    {/* Address */}
-                    <div>
-                        <label htmlFor="address" className="block text-sm font-medium text-gray-700">Address</label>
-                        <textarea
-                            id="address"
-                            name="address"
-                            value={formData.address}
-                            onChange={handleChange}
-                            className="w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-indigo-500"
-                            required
-                        />
-                    </div>
+                    <div className="bg-gradient-to-br from-gray-800/40 to-gray-900/40 backdrop-blur-xl rounded-3xl border border-gray-700/50 shadow-2xl overflow-hidden">
+                        <div className="p-6 sm:p-8">
+                            {/* Venue Details Section */}
+                            <div className="space-y-6 mb-8">
+                                <div className="flex items-center gap-3 mb-6">
+                                    <div className="p-2 bg-gradient-to-r from-blue-500/20 to-blue-600/20 rounded-xl">
+                                        <Building size={24} className="text-blue-400" />
+                                    </div>
+                                    <h2 className="text-xl font-bold text-white">Venue Details</h2>
+                                </div>
 
-                    {/* Booking Start Date */}
-                    <div>
-                        <label htmlFor="bookingStartDate" className="block text-sm font-medium text-gray-700">Booking Start Date</label>
-                        <input
-                            type="text"
-                            id="bookingStartDate"
-                            name="bookingStartDate"
-                            value={formData.bookingStartDate}
-                            onChange={handleChange}
-                            className="w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-indigo-500"
-                            required
-                            placeholder='DD/MM/YYYY'
-                        />
-                    </div>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label className={labelClasses}>
+                                            <Building size={16} />
+                                            Venue Name
+                                        </label>
+                                        <input
+                                            type="text"
+                                            name="venueName"
+                                            value={formData.venueName}
+                                            onChange={handleChange}
+                                            className={errors.venueName ? errorInputClasses : inputClasses}
+                                            placeholder="Enter venue name"
+                                        />
+                                        {errors.venueName && (
+                                            <p className={errorMessageClasses}>
+                                                <AlertCircle size={14} />
+                                                {errors.venueName}
+                                            </p>
+                                        )}
+                                    </div>
 
-                    {/* Booking Time (Optional) */}
-                    <div>
-                        <label htmlFor="bookingTime" className="block text-sm font-medium text-gray-700">Booking Time (Optional)</label>
-                        <input
-                            type="text"
-                            id="bookingTime"
-                            name="bookingTime"
-                            value={formData.bookingTime}
-                            onChange={handleChange}
-                            className="w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-indigo-500"
-                            placeholder='hh:mm AM/PM'
-                        />
-                    </div>
+                                    <div>
+                                        <label className={labelClasses}>
+                                            <User size={16} />
+                                            Venue Organizer
+                                        </label>
+                                        <input
+                                            type="text"
+                                            name="platformOwner"
+                                            value={formData.platformOwner}
+                                            onChange={handleChange}
+                                            className={errors.platformOwner ? errorInputClasses : inputClasses}
+                                            placeholder="Organizer name or company"
+                                        />
+                                        {errors.platformOwner && (
+                                            <p className={errorMessageClasses}>
+                                                <AlertCircle size={14} />
+                                                {errors.platformOwner}
+                                            </p>
+                                        )}
+                                    </div>
+                                </div>
 
-                    {/* Fare */}
-                    <div>
-                        <label htmlFor="fare" className="block text-sm font-medium text-gray-700">Total Fare</label>
-                        <input
-                            type="number"
-                            id="fare"
-                            name="fare"
-                            value={formData.fare}
-                            onChange={handleChange}
-                            className="w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-indigo-500"
-                            required
-                        />
-                    </div>
+                                <div>
+                                    <label className={labelClasses}>
+                                        <MapPin size={16} />
+                                        Address
+                                    </label>
+                                    <textarea
+                                        name="address"
+                                        value={formData.address}
+                                        onChange={handleChange}
+                                        rows="3"
+                                        className={`${errors.address ? errorInputClasses : inputClasses} resize-none`}
+                                        placeholder="Full address of the venue"
+                                    />
+                                    {errors.address && (
+                                        <p className={errorMessageClasses}>
+                                            <AlertCircle size={14} />
+                                            {errors.address}
+                                        </p>
+                                    )}
+                                </div>
+                            </div>
 
-                    {/* Platform Owner */}
-                    <div>
-                        <label htmlFor="platformOwner" className="block text-sm font-medium text-gray-700">Venue Organizer</label>
-                        <input
-                            type="text"
-                            id="platformOwner"
-                            name="platformOwner"
-                            value={formData.platformOwner}
-                            onChange={handleChange}
-                            className="w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-indigo-500"
-                            required
-                        />
-                    </div>
+                            {/* Booking Details Section */}
+                            <div className="space-y-6 mb-8">
+                                <div className="flex items-center gap-3 mb-6">
+                                    <div className="p-2 bg-gradient-to-r from-green-500/20 to-green-600/20 rounded-xl">
+                                        <Calendar size={24} className="text-green-400" />
+                                    </div>
+                                    <h2 className="text-xl font-bold text-white">Booking Details</h2>
+                                </div>
 
-                    {/* State Selection */}
-                    <div>
-                        <label htmlFor="state" className="block text-sm font-medium text-gray-700">State</label>
-                        <select
-                            id="state"
-                            name="state"
-                            value={formData.state}
-                            onChange={handleChange}
-                            className="w-full px-4 py-2 border border-gray-300 rounded-md"
-                        >
-                            <option value="">Select State</option>
-                            <option value="Maharashtra">Maharashtra</option>
-                            <option value="Delhi">Delhi</option>
-                            <option value="TamilNadu">Tamil Nadu</option>
-                            <option value="Karnataka">Karnataka</option>
-                            <option value="Gujarat">Gujarat</option>
-                            <option value="UttarPradesh">Uttar Pradesh</option>
-                            <option value="Rajasthan">Rajasthan</option>
-                            <option value="Punjab">Punjab</option>
-                            <option value="WestBengal">West Bengal</option>
-                            <option value="AndhraPradesh">Andhra Pradesh</option>
-                            <option value="Telangana">Telangana</option>
-                            <option value="Kerala">Kerala</option>
-                            <option value="MadhyaPradesh">Madhya Pradesh</option>
-                            <option value="Bihar">Bihar</option>
-                            {/* Add more states here if necessary */}
-                        </select>
-                    </div>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label className={labelClasses}>
+                                            <Calendar size={16} />
+                                            Booking Date
+                                        </label>
+                                        <input
+                                            type="text"
+                                            name="bookingStartDate"
+                                            value={formData.bookingStartDate}
+                                            onChange={handleChange}
+                                            className={errors.bookingStartDate ? errorInputClasses : inputClasses}
+                                            placeholder="DD/MM/YYYY"
+                                        />
+                                        {errors.bookingStartDate && (
+                                            <p className={errorMessageClasses}>
+                                                <AlertCircle size={14} />
+                                                {errors.bookingStartDate}
+                                            </p>
+                                        )}
+                                    </div>
 
-                    {/* City Selection */}
-                    <div>
-                        <label htmlFor="city" className="block text-sm font-medium text-gray-700">City</label>
-                        <select
-                            id="city"
-                            name="city"
-                            value={formData.city}
-                            onChange={handleChange}
-                            className="w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-indigo-500"
-                            disabled={!formData.state} // Disable city if no state is selected
-                        >
-                            <option value="">Select City</option>
-                            {cities.length > 0 ? (
-                                cities.map(city => (
-                                    <option key={city} value={city}>{city}</option>
-                                ))
-                            ) : (
-                                <option value="">No cities available</option>
-                            )}
-                        </select>
-                    </div>
+                                    <div>
+                                        <label className={labelClasses}>
+                                            <Clock size={16} />
+                                            Booking Time (Optional)
+                                        </label>
+                                        <input
+                                            type="text"
+                                            name="bookingTime"
+                                            value={formData.bookingTime}
+                                            onChange={handleChange}
+                                            className={inputClasses}
+                                            placeholder="hh:mm AM/PM"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
 
-                    {/* Country Selection */}
-                    <div>
-                        <label htmlFor="country" className="block text-sm font-medium text-gray-700">Country</label>
-                        <select
-                            id="country"
-                            name="country"
-                            value={formData.country}
-                            onChange={handleChange}
-                            className="w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-indigo-500"
-                        >
-                            <option value="India">India</option>
-                        </select>
-                    </div>
+                            {/* Location Section */}
+                            <div className="space-y-6 mb-8">
+                                <div className="flex items-center gap-3 mb-6">
+                                    <div className="p-2 bg-gradient-to-r from-yellow-500/20 to-yellow-600/20 rounded-xl">
+                                        <Globe size={24} className="text-yellow-400" />
+                                    </div>
+                                    <h2 className="text-xl font-bold text-white">Location</h2>
+                                </div>
 
-                    {/* Payment Option */}
-                    <div>
-                        <label htmlFor="paymentOption" className="block text-sm font-medium text-gray-700">Payment Option</label>
-                        <select
-                            id="paymentOption"
-                            name="paymentOption"
-                            value={formData.paymentOption}
-                            onChange={handleChange}
-                            className="w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-indigo-500"
-                            required
-                        >
-                            <option value="">Select Payment Option</option>
-                            <option value="creditCard">Credit Card</option>
-                            <option value="debitCard">Debit Card</option>
-                            <option value="onlineBanking">Online Banking</option>
-                            <option value="paypal">PayPal</option>
-                        </select>
-                    </div>
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                    <div>
+                                        <label className={labelClasses}>
+                                            <MapPin size={16} />
+                                            Country
+                                        </label>
+                                        <div className="relative">
+                                            <select
+                                                name="country"
+                                                value={formData.country}
+                                                onChange={handleChange}
+                                                className={`${inputClasses} appearance-none pr-10`}
+                                            >
+                                                <option value="India">India</option>
+                                            </select>
+                                            <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+                                        </div>
+                                    </div>
 
-                    {/* Submit Button */}
-                    <div className="flex justify-center mt-6">
-                        <button
-                            type="button"
-                            onClick={handleSubmit}
-                            className="bg-indigo-600 text-white px-6 py-3 rounded-md hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500"
-                        >
-                            Proceed to Payment
-                        </button>
+                                    <div>
+                                        <label className={labelClasses}>
+                                            <MapPin size={16} />
+                                            State
+                                        </label>
+                                        <div className="relative">
+                                            <select
+                                                name="state"
+                                                value={formData.state}
+                                                onChange={handleChange}
+                                                className={`${errors.state ? errorInputClasses : inputClasses} appearance-none pr-10`}
+                                            >
+                                                <option value="">Select State</option>
+                                                {Object.keys(statesAndCities).map(state => (
+                                                    <option key={state} value={state}>{state}</option>
+                                                ))}
+                                            </select>
+                                            <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+                                        </div>
+                                        {errors.state && (
+                                            <p className={errorMessageClasses}>
+                                                <AlertCircle size={14} />
+                                                {errors.state}
+                                            </p>
+                                        )}
+                                    </div>
+
+                                    <div>
+                                        <label className={labelClasses}>
+                                            <MapPin size={16} />
+                                            City
+                                        </label>
+                                        <div className="relative">
+                                            <select
+                                                name="city"
+                                                value={formData.city}
+                                                onChange={handleChange}
+                                                className={`${errors.city ? errorInputClasses : inputClasses} appearance-none pr-10 ${!formData.state ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                                disabled={!formData.state}
+                                            >
+                                                <option value="">Select City</option>
+                                                {cities.map(city => (
+                                                    <option key={city} value={city}>{city}</option>
+                                                ))}
+                                            </select>
+                                            <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+                                        </div>
+                                        {errors.city && (
+                                            <p className={errorMessageClasses}>
+                                                <AlertCircle size={14} />
+                                                {errors.city}
+                                            </p>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Payment & Fare Section */}
+                            <div className="space-y-6 mb-8">
+                                <div className="flex items-center gap-3 mb-6">
+                                    <div className="p-2 bg-gradient-to-r from-purple-500/20 to-purple-600/20 rounded-xl">
+                                        <DollarSign size={24} className="text-purple-400" />
+                                    </div>
+                                    <h2 className="text-xl font-bold text-white">Payment Details</h2>
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label className={labelClasses}>
+                                            <DollarSign size={16} />
+                                            Total Fare
+                                        </label>
+                                        <div className="relative">
+                                            <input
+                                                type="number"
+                                                name="fare"
+                                                value={formData.fare}
+                                                readOnly
+                                                className={`${inputClasses} pr-10 bg-gray-800/70`}
+                                            />
+                                            {isCalculating ? (
+                                                <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                                                    <div className="w-5 h-5 border-2 border-blue-400/30 border-t-blue-400 rounded-full animate-spin"></div>
+                                                </div>
+                                            ) : (
+                                                <Calculator className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+                                            )}
+                                        </div>
+                                        <p className="text-xs text-gray-500 mt-2">
+                                            Calculated as ₹1000 per day from today
+                                        </p>
+                                    </div>
+
+                                    <div>
+                                        <label className={labelClasses}>
+                                            <CreditCard size={16} />
+                                            Payment Option
+                                        </label>
+                                        <div className="grid grid-cols-2 gap-3">
+                                            {paymentOptions.map(option => (
+                                                <button
+                                                    key={option.value}
+                                                    type="button"
+                                                    onClick={() => {
+                                                        setFormData(prev => ({ ...prev, paymentOption: option.value }));
+                                                        if (errors.paymentOption) setErrors(prev => ({ ...prev, paymentOption: undefined }));
+                                                    }}
+                                                    className={`flex flex-col items-center justify-center p-4 rounded-xl transition-all duration-300 ${formData.paymentOption === option.value
+                                                            ? 'bg-gradient-to-br from-blue-500/20 to-green-500/20 border-2 border-blue-500/50'
+                                                            : 'bg-gray-800/30 border border-gray-700/50 hover:border-blue-500/30'
+                                                        }`}
+                                                >
+                                                    <div className={`mb-2 ${option.color}`}>
+                                                        {option.icon}
+                                                    </div>
+                                                    <span className="text-xs font-medium text-center">{option.label}</span>
+                                                </button>
+                                            ))}
+                                        </div>
+                                        {errors.paymentOption && (
+                                            <p className={errorMessageClasses}>
+                                                <AlertCircle size={14} />
+                                                {errors.paymentOption}
+                                            </p>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Security Info */}
+                            <div className="p-4 bg-gradient-to-r from-blue-500/10 to-green-500/10 rounded-xl border border-blue-500/30 mb-8">
+                                <div className="flex items-start gap-3">
+                                    <Shield size={20} className="text-green-400 mt-0.5 flex-shrink-0" />
+                                    <div>
+                                        <p className="font-semibold text-white">Secure Booking</p>
+                                        <p className="text-sm text-gray-300">
+                                            Your information is protected with SSL encryption. We never store your payment details.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Submit Button */}
+                            <div className="pt-6 border-t border-gray-700/50">
+                                <button
+                                    type="button"
+                                    onClick={handleSubmit}
+                                    className="group w-full flex items-center justify-center gap-3 px-8 py-4 bg-gradient-to-r from-blue-600 via-green-600 to-yellow-500 text-white font-bold rounded-2xl hover:opacity-90 transition-all duration-300 shadow-lg hover:shadow-blue-500/30"
+                                >
+                                    <Receipt size={20} />
+                                    <span>Proceed to Payment</span>
+                                    <ArrowRight size={20} className="group-hover:translate-x-2 transition-transform" />
+                                </button>
+
+                                <p className="text-center text-gray-400 text-sm mt-4 flex items-center justify-center gap-2">
+                                    <CheckCircle size={14} className="text-green-400" />
+                                    Free cancellation up to 24 hours before booking
+                                </p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
