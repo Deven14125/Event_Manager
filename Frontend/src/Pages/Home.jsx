@@ -119,12 +119,30 @@ const HomePage = () => {
                                 </button>
 
                                 <button className="px-6 py-4 bg-gray-800/50 backdrop-blur-sm border border-gray-700 text-gray-300 font-medium rounded-2xl hover:bg-gray-800/80 hover:border-blue-500/50 transition-all duration-300">
-                                    <Link to="/features" className="flex items-center gap-2">
+                                    <Link to="/eventDemo" className="flex items-center gap-2">
                                         <PlayCircle size={20} />
                                         <span>Watch Demo</span>
                                     </Link>
                                 </button>
                             </div>
+                        </div>
+                    </div>
+                </section>
+
+                {/* Trusted By Strip */}
+                <section className="mb-12 sm:mb-16">
+                    <div className="bg-gray-900/40 border border-gray-800 rounded-2xl p-4 sm:p-6 backdrop-blur-sm">
+                        <div className="text-center mb-4">
+                            <span className="text-xs uppercase tracking-widest text-gray-400">Trusted by teams worldwide</span>
+                        </div>
+                        <div className="grid grid-cols-3 sm:grid-cols-6 gap-4 items-center justify-items-center opacity-80">
+                            {['Acme', 'Globex', 'Umbrella', 'Initech', 'Hooli', 'Stark'].map((name, i) => (
+                                <div key={i} className="h-8 sm:h-10 flex items-center">
+                                    <div className="text-gray-500/80 hover:text-gray-300 transition-colors font-semibold tracking-wide select-none">
+                                        {name}
+                                    </div>
+                                </div>
+                            ))}
                         </div>
                     </div>
                 </section>
@@ -153,7 +171,7 @@ const HomePage = () => {
                             <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">Popular Categories</h2>
                             <p className="text-gray-400">Explore events by your interests</p>
                         </div>
-                        <Link to="/categories" className="text-blue-400 hover:text-blue-300 flex items-center gap-2 text-sm sm:text-base">
+                        <Link to="/eventCard" className="text-blue-400 hover:text-blue-300 flex items-center gap-2 text-sm sm:text-base">
                             View all
                             <ArrowRight size={16} />
                         </Link>
@@ -176,6 +194,45 @@ const HomePage = () => {
                                     </div>
                                 </div>
                             </div>
+                        ))}
+                    </div>
+                </section>
+
+                {/* Featured Events (Teaser) */}
+                <section className="mb-16 sm:mb-24">
+                    <div className="flex items-center justify-between mb-8">
+                        <div>
+                            <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">Featured Events</h2>
+                            <p className="text-gray-400">A quick peek at what's trending</p>
+                        </div>
+                        <Link to="/eventCard" className="text-blue-400 hover:text-blue-300 flex items-center gap-2 text-sm sm:text-base">
+                            Browse all
+                            <ArrowRight size={16} />
+                        </Link>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {[1, 2, 3].map((i) => (
+                            <Link to="/eventCard" key={i} className="group">
+                                <div className="relative overflow-hidden rounded-2xl border border-gray-700/50 bg-gradient-to-br from-gray-800/40 to-gray-900/40 backdrop-blur-sm p-6 h-full transition-transform duration-300 group-hover:-translate-y-1 group-hover:shadow-2xl">
+                                    <div className="flex items-start justify-between mb-4">
+                                        <span className="inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full bg-blue-500/10 text-blue-300 border border-blue-500/30">
+                                            <Calendar size={14} className="mr-1" /> Upcoming
+                                        </span>
+                                        <span className="text-sm text-gray-400">#{100 + i}</span>
+                                    </div>
+                                    <h4 className="text-xl font-bold text-white mb-2">Inspiring Event Title</h4>
+                                    <p className="text-gray-400 mb-4 line-clamp-2">A short and sweet description to tease the experience awaiting you.</p>
+                                    <div className="flex items-center text-gray-300 gap-4 text-sm">
+                                        <span className="inline-flex items-center gap-2"><Calendar size={16} /> Soon</span>
+                                        <span className="inline-flex items-center gap-2"><Users size={16} /> 200+</span>
+                                    </div>
+                                    <div className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                        <div className="absolute -right-12 -top-12 w-40 h-40 rounded-full bg-blue-500/10 blur-2xl" />
+                                        <div className="absolute -left-12 -bottom-12 w-40 h-40 rounded-full bg-green-500/10 blur-2xl" />
+                                    </div>
+                                </div>
+                            </Link>
                         ))}
                     </div>
                 </section>
@@ -278,7 +335,7 @@ const HomePage = () => {
                             </p>
                             <div className="flex flex-col sm:flex-row gap-4 justify-center">
                                 <button className="px-8 py-4 bg-gradient-to-r from-blue-600 to-green-600 text-white font-bold rounded-2xl hover:from-blue-700 hover:to-green-700 transition-all duration-300 hover:scale-105 shadow-lg">
-                                    <Link to={isLoggedIn ? '/create-event' : '/signup'} className="flex items-center justify-center gap-3">
+                                    <Link to={isLoggedIn ? '/eventForm' : '/signUp'} className="flex items-center justify-center gap-3">
                                         <Calendar size={20} />
                                         <span>{isLoggedIn ? 'Create Event' : 'Start Free Trial'}</span>
                                     </Link>

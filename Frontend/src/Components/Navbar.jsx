@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Link, Outlet, useNavigate } from "react-router-dom";
+import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import {
   Home,
@@ -76,7 +76,7 @@ const Navbar = () => {
   return (
     <div className="min-h-screen bg-gray-950 text-white">
       {/* ---------------- NAVBAR ---------------- */}
-      <nav className="sticky top-0 z-50 bg-gray-900 border-b border-gray-800">
+      <nav className="sticky top-0 z-50 bg-gray-900/80 backdrop-blur-md border-b border-gray-800 supports-[backdrop-filter]:bg-gray-900/60">
         <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
           {/* LOGO */}
           <Link to="/" className="text-2xl font-bold">
@@ -85,15 +85,20 @@ const Navbar = () => {
 
           {/* DESKTOP LINKS */}
           <div className="hidden md:flex items-center gap-6">
-            {navLinks.map(
-              (l) =>
-                isLoggedIn && (
-                  <Link key={l.to} to={l.to} className="flex items-center gap-2 hover:text-blue-400">
-                    {l.icon}
-                    {l.label}
-                  </Link>
-                )
-            )}
+            {isLoggedIn && navLinks.map((l) => (
+              <NavLink
+                key={l.to}
+                to={l.to}
+                className={({ isActive }) =>
+                  `flex items-center gap-2 px-2 py-1 rounded-md transition-colors ${
+                    isActive ? "text-blue-400 bg-blue-500/10" : "hover:text-blue-400"
+                  }`
+                }
+              >
+                {l.icon}
+                {l.label}
+              </NavLink>
+            ))}
 
             {!isLoggedIn ? (
               <div className="flex gap-3">
@@ -150,14 +155,16 @@ const Navbar = () => {
           <div className="md:hidden bg-gray-900 px-4 pb-4 space-y-2">
             {isLoggedIn &&
               navLinks.map((l) => (
-                <Link
+                <NavLink
                   key={l.to}
                   to={l.to}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="block py-2"
+                  className={({ isActive }) =>
+                    `block py-2 rounded-md px-2 ${isActive ? "text-blue-400 bg-blue-500/10" : "hover:text-blue-400"}`
+                  }
                 >
                   {l.label}
-                </Link>
+                </NavLink>
               ))}
 
             {!isLoggedIn ? (

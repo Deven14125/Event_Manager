@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { api } from "../Services/api.js";
 import { Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import html2canvas from 'html2canvas';
@@ -80,7 +81,7 @@ const EventCard = () => {
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
-				const response = await fetch("http://localhost:7120/event/getEvent");
+				const response = await fetch(api.url("/event/getEvent"));
 				if (!response.ok) {
 					throw new Error(`HTTP error! status: ${response.status}`);
 				}
@@ -136,7 +137,7 @@ const EventCard = () => {
 
 		if (result.isConfirmed) {
 			try {
-				const response = await fetch(`http://localhost:7120/event/deleteEvent/${eventName}`, {
+				const response = await fetch(api.url(`/event/deleteEvent/${eventName}`), {
 					method: 'DELETE',
 				});
 
@@ -153,7 +154,7 @@ const EventCard = () => {
 						customClass: { popup: 'rounded-2xl border border-emerald-500/30' }
 					});
 
-					const updatedResponse = await fetch("http://localhost:7120/event/getEvent");
+					const updatedResponse = await fetch(api.url("/event/getEvent"));
 					if (updatedResponse.ok) {
 						const updatedResult = await updatedResponse.json();
 						setData(updatedResult);
