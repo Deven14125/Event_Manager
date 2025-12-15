@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { api } from "../Services/api.js";
 import { Link, useNavigate } from "react-router-dom";
+import { useUser } from "../context/UserContext";
 import Swal from 'sweetalert2';
 import {
     Mail,
@@ -50,7 +51,7 @@ const checkPasswordStrength = (pass) => {
         color = "text-green-400";
     }
 
-    setPasswordStrength({ msg, color });
+    // setPasswordStrength({ msg, color }); // Removed to avoid ReferenceError
 };
 
 
@@ -70,6 +71,33 @@ const Login = () => {
         { name: 'GitHub', icon: <Github size={20} />, color: 'hover:bg-gray-800/50 hover:border-gray-600/50', text: 'text-gray-400' },
         { name: 'Twitter', icon: <Twitter size={20} />, color: 'hover:bg-sky-500/10 hover:border-sky-500/30', text: 'text-sky-400' },
     ];
+
+    // Password Strength Function
+    const checkPasswordStrength = (pass) => {
+        let strength = 0;
+
+        if (pass.length >= 6) strength++;
+        if (/[A-Z]/.test(pass)) strength++;
+        if (/[a-z]/.test(pass)) strength++;
+        if (/[0-9]/.test(pass)) strength++;
+        if (/[^A-Za-z0-9]/.test(pass)) strength++;
+
+        let msg = "";
+        let color = "";
+
+        if (strength <= 2) {
+            msg = "Weak Password";
+            color = "text-red-400";
+        } else if (strength === 3) {
+            msg = "Medium Password";
+            color = "text-yellow-400";
+        } else {
+            msg = "Strong Password";
+            color = "text-green-400";
+        }
+
+        setPasswordStrength({ msg, color });
+    };
 
     const validateForm = () => {
         const newErrors = {};
@@ -304,6 +332,7 @@ const Login = () => {
                                         value={password}
                                         onChange={(e) => {
                                             setPassword(e.target.value);
+                                            checkPasswordStrength(e.target.value);
                                             if (errors.password) setErrors(prev => ({ ...prev, password: undefined }));
                                         }}
                                         className={`pl-10 pr-10 ${errors.password ? errorInputClasses : inputClasses}`}

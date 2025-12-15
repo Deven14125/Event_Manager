@@ -23,13 +23,11 @@ import {
 
 const SignUp = () => {
     const [formData, setFormData] = useState({
-        firstName: "",
-        lastName: "",
-        dob: "",
+        name: "",
         email: "",
         mobile: "",
         password: "",
-        confirmPassword: ""
+        cpassword: ""
     });
 
     const [isLoading, setIsLoading] = useState(false);
