@@ -109,11 +109,28 @@ const Login = () => {
         else if (password.length < 6) newErrors.password = "Password must be at least 6 characters";
 
         setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
+        return newErrors;
     };
 
     const loginBtn = async () => {
-        if (!validateForm()) {
+        const formErrors = validateForm();
+        if (Object.keys(formErrors).length > 0) {
+            // Check if all fields are empty
+            if (!email.trim() && !password) {
+                Swal.fire({
+                    title: 'Fields Required',
+                    text: 'Please fill in all required fields to login.',
+                    icon: 'warning',
+                    background: '#1f2937',
+                    color: '#fff',
+                    confirmButtonColor: '#3b82f6',
+                    customClass: {
+                        popup: 'rounded-2xl border border-blue-500/30'
+                    }
+                });
+                return;
+            }
+
             // Show validation errors
             Swal.fire({
                 title: 'Validation Error',
@@ -121,7 +138,7 @@ const Login = () => {
                     <div class="text-left">
                         <p class="text-white mb-2">Please correct the following:</p>
                         <ul class="list-disc pl-4 text-gray-300 space-y-1">
-                            ${Object.values(errors).map(error => `<li>${error}</li>`).join('')}
+                            ${Object.values(formErrors).map(error => `<li>${error}</li>`).join('')}
                         </ul>
                     </div>
                 `,
@@ -146,9 +163,14 @@ const Login = () => {
                 body: JSON.stringify({ email, password }),
             });
 
-            if (res.ok) {
-                let data = await res.json();
+            let data;
+            try {
+                data = await res.json();
+            } catch (error) {
+                throw new Error("Server error. Please try again later.");
+            }
 
+            if (res.ok) {
                 // Store auth data
                 localStorage.setItem("authToken", data.token);
                 localStorage.setItem("userEmail", email);
@@ -193,11 +215,23 @@ const Login = () => {
             console.error('Login error:', err);
             
             // Display specific error message from backend
-            const errorMessage = err.message || 'Something went wrong. Please try again later.';
+            let errorMessage = err.message || 'Something went wrong. Please try again later.';
+            
+            // Handle JSON parsing errors or network issues
+            if (errorMessage.includes("Unexpected end of JSON input") || errorMessage.includes("Failed to execute 'json'")) {
+                errorMessage = "Server error. Please try again later.";
+            }
+
+            // Map backend errors to fields
+            if (errorMessage.toLowerCase().includes("email") || errorMessage.toLowerCase().includes("user")) {
+                setErrors(prev => ({ ...prev, email: errorMessage }));
+            } else if (errorMessage.toLowerCase().includes("password")) {
+                setErrors(prev => ({ ...prev, password: errorMessage }));
+            }
             
             Swal.fire({
                 title: 'Login Failed',
-                text: e.message || 'Something went wrong. Please try again.',
+                text: errorMessage,
                 icon: 'error',
                 background: '#1f2937',
                 color: '#fff',

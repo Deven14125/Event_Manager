@@ -70,7 +70,7 @@ const SignUp = () => {
         else if (formData.password !== formData.cpassword) newErrors.cpassword = "Passwords do not match";
 
         setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
+        return newErrors;
     };
 
     const calculatePasswordStrength = (password) => {
@@ -87,18 +87,40 @@ const SignUp = () => {
         setFormData({ ...formData, password });
         setPasswordStrength(calculatePasswordStrength(password));
 
-        if (errors.password) setErrors({ ...errors, password: undefined });
+        const newErrors = { ...errors };
+        if (newErrors.password) delete newErrors.password;
+        if (newErrors.cpassword) delete newErrors.cpassword;
+        setErrors(newErrors);
     };
 
     const handleSignUp = async () => {
-        if (!validateForm()) {
+        const formErrors = validateForm();
+        if (Object.keys(formErrors).length > 0) {
+            // Check if all fields are empty
+            const isAllEmpty = !formData.name.trim() && !formData.email.trim() && !formData.mobile.trim() && !formData.password && !formData.cpassword;
+            
+            if (isAllEmpty) {
+                Swal.fire({
+                    title: 'Fields Required',
+                    text: 'Please fill in all required fields to create an account.',
+                    icon: 'warning',
+                    background: '#1f2937',
+                    color: '#fff',
+                    confirmButtonColor: '#3b82f6',
+                    customClass: {
+                        popup: 'rounded-2xl border border-blue-500/30'
+                    }
+                });
+                return;
+            }
+
             Swal.fire({
                 title: 'Validation Error',
                 html: `
                     <div class="text-left">
                         <p class="text-white mb-2">Please correct the following:</p>
                         <ul class="list-disc pl-4 text-gray-300 space-y-1">
-                            ${Object.values(errors).map(error => `<li>${error}</li>`).join('')}
+                            ${Object.values(formErrors).map(error => `<li>${error}</li>`).join('')}
                         </ul>
                     </div>
                 `,
@@ -127,7 +149,12 @@ const SignUp = () => {
                 }),
             });
 
-            const data = await res.json();
+            let data;
+            try {
+                data = await res.json();
+            } catch (error) {
+                throw new Error("Server error. Please try again later.");
+            }
 
             if (data.success) {
                 Swal.fire({
@@ -159,11 +186,23 @@ const SignUp = () => {
             console.error('Signup error:', err);
             
             // Display specific error message from backend
-            const errorMessage = err.message || 'Something went wrong. Please try again later.';
+            let errorMessage = err.message || 'Something went wrong. Please try again later.';
             
+            // Handle JSON parsing errors or network issues
+            if (errorMessage.includes("Unexpected end of JSON input") || errorMessage.includes("Failed to execute 'json'")) {
+                errorMessage = "Server error. Please try again later.";
+            }
+
+            // Map backend errors to fields
+            if (errorMessage.toLowerCase().includes("email")) {
+                setErrors(prev => ({ ...prev, email: errorMessage }));
+            } else if (errorMessage.toLowerCase().includes("mobile")) {
+                setErrors(prev => ({ ...prev, mobile: errorMessage }));
+            }
+
             Swal.fire({
                 title: 'Registration Failed',
-                text: e.message || 'Something went wrong. Please try again.',
+                text: errorMessage,
                 icon: 'error',
                 background: '#1f2937',
                 color: '#fff',
@@ -443,7 +482,7 @@ const SignUp = () => {
                                         {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                                     </button>
                                 </div>
-                                {formData.cpassword && formData.cpassword !== formData.password && (
+                                {formData.cpassword && formData.cpassword !== formData.password && !errors.cpassword && (
                                     <p className="text-sm mt-1 text-red-400">Passwords do not match</p>
                                 )}
                                 {errors.cpassword && (
