@@ -23,11 +23,13 @@ import {
 
 const SignUp = () => {
     const [formData, setFormData] = useState({
-        name: "",
+        firstName: "",
+        lastName: "",
+        dob: "",
         email: "",
         mobile: "",
         password: "",
-        cpassword: ""
+        confirmPassword: ""
     });
 
     const [isLoading, setIsLoading] = useState(false);
@@ -127,7 +129,9 @@ const SignUp = () => {
                 }),
             });
 
-            if (res.ok) {
+            const data = await res.json();
+
+            if (data.success) {
                 Swal.fire({
                     title: 'Account Created Successfully!',
                     html: `
@@ -151,11 +155,14 @@ const SignUp = () => {
                     navigate("/login");
                 });
             } else {
-                let errorData = await res.json();
-                throw new Error(errorData.message || "Failed to create account");
+                throw new Error(data.message || "Failed to create account");
             }
-        } catch (e) {
-            console.error(e);
+        } catch (err) {
+            console.error('Signup error:', err);
+            
+            // Display specific error message from backend
+            const errorMessage = err.message || 'Something went wrong. Please try again later.';
+            
             Swal.fire({
                 title: 'Registration Failed',
                 text: e.message || 'Something went wrong. Please try again.',

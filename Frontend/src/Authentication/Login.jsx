@@ -63,6 +63,7 @@ const Login = () => {
     const [rememberMe, setRememberMe] = useState(false);
     const [errors, setErrors] = useState({});
     const navigate = useNavigate();
+    const { login } = useUser();
 
     const socialProviders = [
         { name: 'Facebook', icon: <Facebook size={20} />, color: 'hover:bg-blue-500/10 hover:border-blue-500/30', text: 'text-blue-400' },
@@ -152,12 +153,20 @@ const Login = () => {
                 }).then(() => {
                     navigate("/home");
                 });
+                
+                // Redirect to home page
+                setTimeout(() => {
+                    navigate("/home");
+                }, 500);
             } else {
-                let errorData = await res.json();
-                throw new Error(errorData.message || "Invalid credentials");
+                throw new Error(data.message || "Invalid credentials");
             }
-        } catch (e) {
-            console.error(e);
+        } catch (err) {
+            console.error('Login error:', err);
+            
+            // Display specific error message from backend
+            const errorMessage = err.message || 'Something went wrong. Please try again later.';
+            
             Swal.fire({
                 title: 'Login Failed',
                 text: e.message || 'Something went wrong. Please try again.',
