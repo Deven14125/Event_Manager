@@ -16,6 +16,7 @@ import {
   User,
 } from "lucide-react";
 import Footer from "./Footer";
+import ThemeToggle from "./ThemeToggle";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -74,12 +75,12 @@ const Navbar = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-950 text-white">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-white transition-colors duration-300">
       {/* ---------------- NAVBAR ---------------- */}
-      <nav className="sticky top-0 z-50 bg-gray-900/80 backdrop-blur-md border-b border-gray-800 supports-[backdrop-filter]:bg-gray-900/60">
+      <nav className="sticky top-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800 supports-[backdrop-filter]:bg-white/60 dark:supports-[backdrop-filter]:bg-gray-900/60 transition-colors duration-300">
         <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
           {/* LOGO */}
-          <Link to="/" className="text-2xl font-bold">
+          <Link to="/" className="text-2xl font-bold text-gray-900 dark:text-white transition-colors duration-300">
             EventHub
           </Link>
 
@@ -91,7 +92,7 @@ const Navbar = () => {
                 to={l.to}
                 className={({ isActive }) =>
                   `flex items-center gap-2 px-2 py-1 rounded-md transition-colors ${
-                    isActive ? "text-blue-400 bg-blue-500/10" : "hover:text-blue-400"
+                    isActive ? "text-blue-600 dark:text-blue-400 bg-blue-500/10" : "text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400"
                   }`
                 }
               >
@@ -100,12 +101,15 @@ const Navbar = () => {
               </NavLink>
             ))}
 
+            {/* Theme Toggle */}
+            <ThemeToggle />
+
             {!isLoggedIn ? (
               <div className="flex gap-3">
-                <button onClick={() => navigate("/login")} className="flex items-center gap-1">
+                <button onClick={() => navigate("/login")} className="flex items-center gap-1 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
                   <LogIn size={18} /> Login
                 </button>
-                <button onClick={() => navigate("/signUp")} className="flex items-center gap-1">
+                <button onClick={() => navigate("/signUp")} className="flex items-center gap-1 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
                   <UserPlus size={18} /> Sign Up
                 </button>
               </div>
@@ -113,7 +117,7 @@ const Navbar = () => {
               <div className="relative" ref={dropdownRef}>
                 <button
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                  className="flex items-center gap-2"
+                  className="flex items-center gap-2 text-gray-700 dark:text-gray-300 transition-colors"
                 >
                   <img
                     src="https://randomuser.me/api/portraits/men/32.jpg"
@@ -124,13 +128,13 @@ const Navbar = () => {
                 </button>
 
                 {isDropdownOpen && (
-                  <div className="absolute right-0 mt-3 w-48 bg-gray-800 rounded-xl shadow-lg">
-                    <Link to="/profile" className="dropdown-item flex items-center gap-2 px-4 py-3">
+                  <div className="absolute right-0 mt-3 w-48 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 transition-colors">
+                    <Link to="/profile" className="dropdown-item flex items-center gap-2 px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
                       <User size={16} /> Profile
                     </Link>
                     <button
                       onClick={handleLogout}
-                      className="w-full text-left px-4 py-3 text-red-400 hover:bg-gray-700"
+                      className="w-full text-left px-4 py-3 text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                     >
                       <LogOut size={16} className="inline mr-2" />
                       Logout
@@ -144,7 +148,7 @@ const Navbar = () => {
           {/* MOBILE BUTTON */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="md:hidden"
+            className="md:hidden text-gray-700 dark:text-gray-300 transition-colors"
           >
             {isMobileMenuOpen ? <X /> : <Menu />}
           </button>
@@ -152,7 +156,7 @@ const Navbar = () => {
 
         {/* ---------------- MOBILE MENU ---------------- */}
         {isMobileMenuOpen && (
-          <div className="md:hidden bg-gray-900 px-4 pb-4 space-y-2">
+          <div className="md:hidden bg-white dark:bg-gray-900 px-4 pb-4 space-y-2 border-t border-gray-200 dark:border-gray-800 transition-colors">
             {isLoggedIn &&
               navLinks.map((l) => (
                 <NavLink
@@ -160,24 +164,29 @@ const Navbar = () => {
                   to={l.to}
                   onClick={() => setIsMobileMenuOpen(false)}
                   className={({ isActive }) =>
-                    `block py-2 rounded-md px-2 ${isActive ? "text-blue-400 bg-blue-500/10" : "hover:text-blue-400"}`
+                    `block py-2 rounded-md px-2 transition-colors ${isActive ? "text-blue-600 dark:text-blue-400 bg-blue-500/10" : "text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400"}`
                   }
                 >
                   {l.label}
                 </NavLink>
               ))}
 
+            {/* Theme Toggle for Mobile */}
+            <div className="flex justify-center py-2">
+              <ThemeToggle />
+            </div>
+
             {!isLoggedIn ? (
               <>
-                <button onClick={() => navigate("/login")} className="block w-full py-2">
+                <button onClick={() => navigate("/login")} className="block w-full py-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
                   Login
                 </button>
-                <button onClick={() => navigate("/signUp")} className="block w-full py-2">
+                <button onClick={() => navigate("/signUp")} className="block w-full py-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
                   Sign Up
                 </button>
               </>
             ) : (
-              <button onClick={handleLogout} className="block w-full py-2 text-red-400">
+              <button onClick={handleLogout} className="block w-full py-2 text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md transition-colors">
                 Logout
               </button>
             )}
