@@ -147,6 +147,6 @@ Thank you for helping make Event Manager a welcoming, inclusive, and creative pl
 
 **"Streamline Your Events, Elevate Your Experience"**
 
-© 2024 Event Manager. All rights reserved.
+© 2026 Event Manager. All rights reserved.
 
 </div>
