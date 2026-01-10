@@ -67,7 +67,8 @@ const HomePage = () => {
     ];
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-900 to-black text-white overflow-hidden">
+        <div className="min-h-screen">
+            
             {/* Animated Background Elements */}
             <div className="absolute inset-0 overflow-hidden">
                 <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl"></div>
@@ -79,7 +80,7 @@ const HomePage = () => {
             <main className="relative z-10 p-4 sm:p-6 max-w-7xl mx-auto">
                 {/* Hero Section */}
                 <section className="mt-8 mb-16 sm:mt-12 sm:mb-24">
-                    <div className="relative bg-gradient-to-br from-gray-800/40 via-gray-800/20 to-transparent backdrop-blur-xl rounded-3xl p-6 sm:p-10 lg:p-14 border border-gray-700/50 shadow-2xl overflow-hidden">
+                    <div className="relative bg-light-surface/80 dark:bg-dark-surface/60 backdrop-blur-xl rounded-3xl p-6 sm:p-10 lg:p-14 border border-gray-200 dark:border-gray-700 shadow-2xl overflow-hidden">
                         {/* Decorative elements */}
                         <div className="absolute top-0 right-0 w-40 h-40 bg-blue-500/5 rounded-full -translate-y-20 translate-x-20"></div>
                         <div className="absolute bottom-0 left-0 w-40 h-40 bg-green-500/5 rounded-full translate-y-20 -translate-x-20"></div>
@@ -96,12 +97,12 @@ const HomePage = () => {
                                 <span className="block bg-gradient-to-r from-blue-400 via-green-400 to-yellow-400 bg-clip-text text-transparent">
                                     Hello {userName}!
                                 </span>
-                                <span className="block text-3xl sm:text-4xl lg:text-5xl text-gray-300 mt-2">
+                                <span className="block text-3xl sm:text-4xl lg:text-5xl text-gray-700 dark:text-gray-300 mt-2">
                                     Ready for amazing events?
-                                </span>
+                                </span> 
                             </h1>
 
-                            <p className="text-gray-400 text-lg sm:text-xl mb-8 sm:mb-10 max-w-2xl leading-relaxed">
+                            <p className="text-gray-600 dark:text-gray-400 text-lg sm:text-xl mb-8 sm:mb-10">
                                 {`Discover, join, and create unforgettable experiences. From tech conferences to music festivals, we've got something for everyone.`}
                             </p>
 
@@ -118,7 +119,7 @@ const HomePage = () => {
                                     </Link>
                                 </button>
 
-                                <button className="px-6 py-4 bg-gray-800/50 backdrop-blur-sm border border-gray-700 text-gray-300 font-medium rounded-2xl hover:bg-gray-800/80 hover:border-blue-500/50 transition-all duration-300">
+                                <button className="px-6 py-4 bg-light-card dark:bg-dark-card border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-light-surface dark:hover:bg-dark-surface hover:border-blue-500/50 transition-all duration-300">
                                     <Link to="/eventDemo" className="flex items-center gap-2">
                                         <PlayCircle size={20} />
                                         <span>Watch Demo</span>
@@ -131,14 +132,14 @@ const HomePage = () => {
 
                 {/* Trusted By Strip */}
                 <section className="mb-12 sm:mb-16">
-                    <div className="bg-gray-900/40 border border-gray-800 rounded-2xl p-4 sm:p-6 backdrop-blur-sm">
+                    <div className="bg-light-surface dark:bg-dark-surface border border-gray-200 dark:border-gray-700 rounded-2xl p-4 sm:p-6 backdrop-blur-sm">
                         <div className="text-center mb-4">
                             <span className="text-xs uppercase tracking-widest text-gray-400">Trusted by teams worldwide</span>
                         </div>
                         <div className="grid grid-cols-3 sm:grid-cols-6 gap-4 items-center justify-items-center opacity-80">
                             {['Acme', 'Globex', 'Umbrella', 'Initech', 'Hooli', 'Stark'].map((name, i) => (
                                 <div key={i} className="h-8 sm:h-10 flex items-center">
-                                    <div className="text-gray-500/80 hover:text-gray-300 transition-colors font-semibold tracking-wide select-none">
+                                    <div className="text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-300 transition-colors font-semibold tracking-wide select-none">
                                         {name}
                                     </div>
                                 </div>
@@ -156,7 +157,7 @@ const HomePage = () => {
                             { value: "98%", label: "Satisfaction", color: "text-yellow-400" },
                             { value: "24/7", label: "Support", color: "text-cyan-400" },
                         ].map((stat, idx) => (
-                            <div key={idx} className="bg-gray-800/30 backdrop-blur-sm rounded-2xl p-4 sm:p-6 border border-gray-700/50 hover:border-blue-500/50 transition-colors group">
+                            <div key={idx} className=" bg-light-card dark:bg-dark-card border-gray-200 dark:border-gray-700 backdrop-blur-sm rounded-2xl p-4 sm:p-6 border hover:border-blue-500/50 transition-colors group">
                                 <div className={`text-2xl sm:text-3xl font-bold ${stat.color} mb-1`}>{stat.value}</div>
                                 <div className="text-gray-400 text-sm sm:text-base">{stat.label}</div>
                             </div>
@@ -168,7 +169,7 @@ const HomePage = () => {
                 <section className="mb-16 sm:mb-24">
                     <div className="flex items-center justify-between mb-8">
                         <div>
-                            <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">Popular Categories</h2>
+                            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-2">Popular Categories</h2>
                             <p className="text-gray-400">Explore events by your interests</p>
                         </div>
                         <Link to="/eventCard" className="text-blue-400 hover:text-blue-300 flex items-center gap-2 text-sm sm:text-base">
@@ -202,7 +203,7 @@ const HomePage = () => {
                 <section className="mb-16 sm:mb-24">
                     <div className="flex items-center justify-between mb-8">
                         <div>
-                            <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">Featured Events</h2>
+                            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-2">Featured Events</h2>
                             <p className="text-gray-400">A quick peek at what's trending</p>
                         </div>
                         <Link to="/eventCard" className="text-blue-400 hover:text-blue-300 flex items-center gap-2 text-sm sm:text-base">
@@ -214,16 +215,16 @@ const HomePage = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {[1, 2, 3].map((i) => (
                             <Link to="/eventCard" key={i} className="group">
-                                <div className="relative overflow-hidden rounded-2xl border border-gray-700/50 bg-gradient-to-br from-gray-800/40 to-gray-900/40 backdrop-blur-sm p-6 h-full transition-transform duration-300 group-hover:-translate-y-1 group-hover:shadow-2xl">
+                                <div className="relative overflow-hidden rounded-2xl border bg-light-card dark:bg-dark-card backdrop-blur-sm p-6 h-full transition-transform duration-300 group-hover:-translate-y-1 group-hover:shadow-2xl">
                                     <div className="flex items-start justify-between mb-4">
-                                        <span className="inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full bg-blue-500/10 text-blue-300 border border-blue-500/30">
-                                            <Calendar size={14} className="mr-1" /> Upcoming
+                                        <span className="inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full bg-dark-card dark:bg-dark-card text-blue-300 border border-blue-500/30">
+                                            <Calendar size={14} className="mr-1" /> Upcoming    
                                         </span>
                                         <span className="text-sm text-gray-400">#{100 + i}</span>
                                     </div>
-                                    <h4 className="text-xl font-bold text-white mb-2">Inspiring Event Title</h4>
+                                    <h4 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Inspiring Event Title</h4>
                                     <p className="text-gray-400 mb-4 line-clamp-2">A short and sweet description to tease the experience awaiting you.</p>
-                                    <div className="flex items-center text-gray-300 gap-4 text-sm">
+                                    <div className="flex items-center text-gray-700 dark:text-white gap-4 text-sm">
                                         <span className="inline-flex items-center gap-2"><Calendar size={16} /> Soon</span>
                                         <span className="inline-flex items-center gap-2"><Users size={16} /> 200+</span>
                                     </div>
@@ -244,7 +245,7 @@ const HomePage = () => {
                             <Star size={16} className="text-yellow-400" />
                             <span className="text-sm font-medium text-blue-400">Why Choose Us</span>
                         </div>
-                        <h3 className="text-3xl sm:text-4xl font-bold text-white mb-4">
+                        <h3 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-4">
                             Everything you need for
                             <span className="bg-gradient-to-r from-blue-400 via-green-400 to-yellow-400 bg-clip-text text-transparent"> amazing events</span>
                         </h3>
@@ -254,12 +255,12 @@ const HomePage = () => {
                         {features.map((feature, idx) => (
                             <div
                                 key={idx}
-                                className={`bg-gradient-to-br from-gray-800/30 to-gray-900/30 backdrop-blur-sm rounded-2xl p-6 border border-gray-700/50 ${feature.color} hover:border-blue-500/50 transition-all duration-300 hover:translate-y-[-8px] group`}
+                                className={`bg-light-card dark:bg-dark-card border border-gray-200 dark:border-gray-700 backdrop-blur-sm rounded-2xl p-6  ${feature.color} hover:border-blue-500/50 transition-all duration-300 hover:translate-y-[-8px] group`}
                             >
                                 <div className="mb-4 p-3 bg-gray-800/50 rounded-xl w-fit group-hover:scale-110 transition-transform duration-300">
                                     {feature.icon}
                                 </div>
-                                <h4 className="text-xl font-bold text-white mb-2">{feature.title}</h4>
+                                <h4 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{feature.title}</h4>
                                 <p className="text-gray-400">{feature.desc}</p>
                             </div>
                         ))}
@@ -269,7 +270,7 @@ const HomePage = () => {
                 {/* Testimonials */}
                 <section className="mb-16 sm:mb-24">
                     <div className="text-center mb-12">
-                        <h3 className="text-3xl sm:text-4xl font-bold text-white mb-4">
+                        <h3 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-4">
                             Loved by <span className="bg-gradient-to-r from-blue-400 to-green-400 bg-clip-text text-transparent">thousands</span>
                         </h3>
                         <p className="text-gray-400 max-w-2xl mx-auto">Join our community of happy event organizers and attendees</p>
@@ -294,7 +295,7 @@ const HomePage = () => {
                         ].map((testimonial, idx) => (
                             <div
                                 key={idx}
-                                className={`relative bg-gradient-to-br ${testimonial.color} backdrop-blur-sm rounded-3xl p-8 border border-gray-700/50 hover:border-blue-500/50 transition-all duration-300`}
+                                className={`relative bg-gradient-to-br ${testimonial.color} backdrop-blur-sm rounded-3xl p-8 border border-gray-200 dark:border-gray-700 hover:border-blue-500/50 transition-all duration-300`}
                             >
                                 <div className="absolute top-6 right-6 text-6xl text-gray-700/50 font-serif"></div>
                                 <div className="relative z-10">
@@ -303,11 +304,11 @@ const HomePage = () => {
                                             {testimonial.avatar}
                                         </div>
                                         <div>
-                                            <p className="font-bold text-white text-lg">{testimonial.author}</p>
-                                            <p className="text-sm text-gray-400">{testimonial.role}</p>
+                                            <p className="font-bold text-gray-900 dark:text-white text-lg">{testimonial.author}</p>
+                                            <p className="text-sm text-gray-900 dark:text-white">{testimonial.role}</p>
                                         </div>
                                     </div>
-                                    <p className="text-gray-300 text-lg italic leading-relaxed">{testimonial.quote}</p>
+                                    <p className="text-gray-900 dark:text-white text-lg italic leading-relaxed">{testimonial.quote}</p>
                                     <div className="flex gap-1 mt-6">
                                         {[...Array(5)].map((_, i) => (
                                             <Star key={i} size={20} className="fill-yellow-400 text-yellow-400" />
@@ -327,7 +328,7 @@ const HomePage = () => {
                         <div className="absolute -bottom-20 -left-20 w-60 h-60 bg-green-500/10 rounded-full blur-3xl"></div>
 
                         <div className="relative z-10 text-center">
-                            <h3 className="text-3xl sm:text-4xl font-bold text-white mb-4">
+                            <h3 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-4">
                                 Ready to create amazing experiences?
                             </h3>
                             <p className="text-gray-300 text-lg mb-8 max-w-2xl mx-auto">
@@ -340,7 +341,7 @@ const HomePage = () => {
                                         <span>{isLoggedIn ? 'Create Event' : 'Start Free Trial'}</span>
                                     </Link>
                                 </button>
-                                <button className="px-8 py-4 bg-gray-800/50 backdrop-blur-sm border border-gray-700 text-gray-300 font-medium rounded-2xl hover:bg-gray-800/80 hover:border-blue-500/50 transition-all duration-300">
+                                <button className="px-8 py-4 bg-light-card dark:bg-dark-card border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-light-surface dark:hover:bg-dark-surface transition-all duration-300">
                                     <Link to="/contact" className="flex items-center justify-center gap-3">
                                         Schedule a Demo
                                     </Link>
