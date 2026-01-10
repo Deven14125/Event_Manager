@@ -1,3 +1,4 @@
+<a id="top"></a>
 <div align="center">
 
 # 🎉 Event Manager
@@ -16,7 +17,7 @@
 </div>
 
 ---
-
+<a id="about-the-project"></a>
 ## 📖 About The Project
 
 Event Manager is a comprehensive full-stack event management system that revolutionizes how users discover, book, and manage events. Built with the powerful MERN stack (MongoDB, Express, React, Node.js), this application combines robust backend functionality with a stunning, interactive frontend featuring 3D graphics and modern UI components.
@@ -33,7 +34,6 @@ Whether you're organizing conferences, workshops, concerts, or community gatheri
 - **User-Friendly** - Intuitive interface designed for all user levels
 
 ---
-
 ## 📑 Table of Contents
 
 - [About The Project](#about-the-project)
@@ -57,7 +57,7 @@ Whether you're organizing conferences, workshops, concerts, or community gatheri
 - [Acknowledgments](#acknowledgments)
 
 ---
-
+<a id="key-features"></a>
 ## ✨ Key Features
 
 ### 🔐 Authentication & Security
@@ -94,7 +94,7 @@ Whether you're organizing conferences, workshops, concerts, or community gatheri
 - **Scalable Architecture** - Modular design for easy feature additions
 
 ---
-
+<a id="tech-stack"></a>
 ## 🛠️ Tech Stack
 
 ### Frontend Technologies
@@ -172,11 +172,12 @@ Whether you're organizing conferences, workshops, concerts, or community gatheri
 ```
 
 ---
-
+<a id="getting-started"></a>
 ## 🚀 Getting Started
 
 Follow these comprehensive instructions to get Event Manager running on your local machine.
 
+<a id="prerequisites"></a>
 ### Prerequisites
 
 Before you begin, ensure you have the following installed:
@@ -204,7 +205,7 @@ Before you begin, ensure you have the following installed:
    ```bash
    git --version
    ```
-
+<a id="backend-setup"></a>
 ### Backend Setup
 
 #### Step 1: Clone the Repository
@@ -276,7 +277,7 @@ You should see:
 Connected to MongoDB Database SuccessFully
 Server is running on port 7120
 ```
-
+<a id="frontend-setup"></a>
 ### Frontend Setup
 
 #### Step 1: Navigate to Frontend Directory
@@ -311,6 +312,7 @@ npm run dev
 
 The application will open at `http://localhost:5173` (or the next available port).
 
+<a id="environment-variables"></a>
 ### Environment Variables
 
 #### Backend `.env` Variables Explained
@@ -333,7 +335,7 @@ The application will open at `http://localhost:5173` (or the next available port
 | `VITE_APP_NAME` | Application name | Event Manager | No |
 
 ---
-
+<a id="project-structure"></a>
 ## 📂 Project Structure
 
 ```
@@ -440,7 +442,7 @@ Event_Manager/
 ```
 
 ---
-
+<a id="api-documentation"></a>
 ## 🔌 API Documentation
 
 ### Base URL
@@ -692,7 +694,7 @@ All endpoints may return the following error responses:
 ```
 
 ---
-
+<a id="usage-guide"></a>
 ## 📱 Usage Guide
 
 ### For Users
@@ -779,7 +781,7 @@ export default YourPage;
 ```
 
 ---
-
+<a id="screenshots"></a>
 ## 🖼️ Screenshots
 
 ### Homepage
@@ -809,7 +811,7 @@ _Manage personal information and preferences_
 > **Note:** Replace placeholder images with actual screenshots of your application
 
 ---
-
+<a id="roadmap"></a>
 ## 🗺️ Roadmap
 
 ### Phase 1: Foundation ✅
@@ -860,7 +862,7 @@ _Manage personal information and preferences_
 See the [open issues](https://github.com/yourusername/event-manager/issues) for a full list of proposed features and known issues.
 
 ---
-
+<a id="contributing"></a>
 ## 🤝 Contributing
 
 We love contributions from the community! Whether it's bug fixes, feature enhancements, or documentation improvements, every contribution is valuable.
@@ -979,7 +981,7 @@ git push origin feature/your-feature-name
 - Follow project guidelines
 
 ---
-
+<a id="troubleshooting"></a>
 ## 🔧 Troubleshooting
 
 ### Common Issues and Solutions
@@ -1097,7 +1099,7 @@ If you're still experiencing issues:
    - Screenshots if applicable
 
 ---
-
+<a id="license"></a>
 ## 📜 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
@@ -1137,7 +1139,7 @@ SOFTWARE.
 - ❌ No liability or warranty provided
 
 ---
-
+<a id="contact"></a>
 ## 📧 Contact
 
 ### Project Maintainers
@@ -1168,7 +1170,7 @@ SOFTWARE.
 - **Questions**: [GitHub Discussions](https://github.com/Deven14125/event-manager/discussions)
 
 ---
-
+<a id="acknowledgments"></a>
 ## 🙏 Acknowledgments
 
 Special thanks to all the amazing technologies and resources that made this project possible:
@@ -1235,7 +1237,7 @@ If you found this project helpful or interesting, please consider:
 
 **"Streamline Your Events, Elevate Your Experience"**
 
-[⬆ Back to Top](#-event-manager)
+<h2><a href="#top">⬆ Back to Top</a></h2>
 
 ---
 
