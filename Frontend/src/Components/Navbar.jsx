@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import {
   Home,
@@ -15,7 +15,6 @@ import {
   Bell,
   User,
 } from "lucide-react";
-import Footer from "./Footer";
 import ThemeToggle from "./ThemeToggle";
 
 const Navbar = () => {
@@ -74,9 +73,9 @@ const Navbar = () => {
     { to: "/myBookings", label: "Bookings", icon: <Ticket size={18} />, auth: true },
   ];
 
-  return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-white transition-colors duration-300">
-      {/* ---------------- NAVBAR ---------------- */}
+        {/* ---------------- NAVBAR ---------------- */}
+return (
+
       <nav className="sticky top-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800 supports-[backdrop-filter]:bg-white/60 dark:supports-[backdrop-filter]:bg-gray-900/60 transition-colors duration-300">
         <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
           {/* LOGO */}
@@ -194,12 +193,8 @@ const Navbar = () => {
         )}
       </nav>
 
-      {/* ---------------- PAGE CONTENT ---------------- */}
-      <Outlet />
+);
 
-      <Footer />
-    </div>
-  );
 };
 
 export default Navbar;

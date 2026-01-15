@@ -17,6 +17,7 @@ import About from './Pages/About';
 import Contact from './Pages/Contact';
 import Profile from './Pages/Profile';
 import ScrollToTop from './Components/ScrollToTop';
+import Layout from "./Components/Layout";
 
 function App() {
   const [eventData, setEventData] = useState(null);
@@ -25,7 +26,7 @@ function App() {
     <BrowserRouter>
       <ScrollToTop />
       <Routes>
-        <Route path="/" element={<Navbar />}>
+      <Route path="/" element={<Layout />}>
           {/* Public Routes */}
           <Route index element={<Home />} />
           <Route path="/home" element={<Home />} />

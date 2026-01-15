@@ -61,7 +61,7 @@ const Footer = () => {
     ];
 
     return (
-        <footer className="relative bg-gradient-to-br from-gray-900 via-gray-900 to-black text-white overflow-hidden">
+        <footer className="relative bg-light-surface dark:bg-dark-bg dark:text-white overflow-hidden">
             {/* Decorative Elements */}
             <div className="absolute inset-0 overflow-hidden">
                 <div className="absolute -top-20 -left-20 w-60 h-60 bg-blue-500/5 rounded-full blur-3xl"></div>
@@ -84,10 +84,10 @@ const Footer = () => {
                                     </span>
                                 </h3>
                             </div>
-                            <p className="text-gray-400 text-sm leading-relaxed">
+                            <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
                                 Creating unforgettable experiences and bringing communities together through amazing events.
                             </p>
-                            <div className="flex items-center gap-2 text-sm text-gray-400">
+                            <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
                                 <Shield size={14} className="text-green-400" />
                                 <span>Secure & Trusted Platform</span>
                             </div>
@@ -95,7 +95,7 @@ const Footer = () => {
 
                         {/* Quick Links */}
                         <div>
-                            <h4 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                            <h4 className="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
                                 <Zap size={18} className="text-blue-400" />
                                 Quick Links
                             </h4>
@@ -104,7 +104,7 @@ const Footer = () => {
                                     <Link
                                         key={link.path}
                                         to={link.path}
-                                        className="group flex items-center gap-2 p-2 text-gray-400 hover:text-white rounded-lg transition-all duration-300 hover:bg-gray-800/30"
+                                        className="group flex items-center gap-2 p-2 text-gray-600 dark:text-gray-400 hover:text-white rounded-lg transition-all duration-300 hover:bg-light-card dark:hover:bg-dark-card hover:text-gray-900 dark:hover:text-white"
                                     >
                                         <span className="text-lg">{link.icon}</span>
                                         <span className="text-sm">{link.label}</span>
@@ -116,17 +116,17 @@ const Footer = () => {
 
                         {/* Event Categories */}
                         <div>
-                            <h4 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                            <h4 className="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
                                 <Calendar size={18} className="text-green-400" />
                                 Popular Categories
                             </h4>
                             <div className="space-y-2">
                                 {categories.map((category) => (
-                                    <div key={category.name} className="flex items-center justify-between p-2 hover:bg-gray-800/30 rounded-lg transition-colors">
+                                    <div key={category.name} className="flex items-center justify-between p-2 hover:bg-light-card dark:hover:bg-dark-card rounded-lg transition-colors">
                                         <span className={`text-sm font-medium ${category.color}`}>
                                             {category.name}
                                         </span>
-                                        <span className="text-xs text-gray-500 px-2 py-1 bg-gray-800/50 rounded-full">
+                                        <span className="text-xs text-gray-600 dark:text-gray-400 px-2 py-1 bg-light-card dark:bg-dark-card rounded-full">
                                             {category.count}
                                         </span>
                                     </div>
@@ -136,7 +136,7 @@ const Footer = () => {
 
                         {/* Contact & Newsletter */}
                         <div>
-                            <h4 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                            <h4 className="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
                                 <Send size={18} className="text-yellow-400" />
                                 Stay Updated
                             </h4>
@@ -158,12 +158,12 @@ const Footer = () => {
                                 
                                 {/* Newsletter Subscription */}
                                 <div className="mt-4">
-                                    <p className="text-sm text-gray-400 mb-2">Subscribe to our newsletter</p>
+                                    <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">Subscribe to our newsletter</p>
                                     <div className="flex gap-2">
                                         <input
                                             type="email"
                                             placeholder="Your email"
-                                            className="flex-1 px-3 py-2 bg-gray-800/50 border border-gray-700/50 rounded-lg text-sm text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                            className="flex-1 px-3 py-2 bg-light-card dark:bg-dark-card border border-gray-300 dark:border-gray-700 rounded-lg text-sm text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                         />
                                         <button className="px-3 py-2 bg-gradient-to-r from-blue-600 to-green-600 text-white text-sm font-medium rounded-lg hover:opacity-90 transition-opacity">
                                             <ArrowRight size={16} />
@@ -180,15 +180,15 @@ const Footer = () => {
                             {stats.map((stat, idx) => (
                                 <div 
                                     key={idx}
-                                    className={`bg-gradient-to-br ${stat.color} backdrop-blur-sm rounded-xl p-4 border border-gray-700/50`}
+                                    className={`bg-gradient-to-br ${stat.color} backdrop-blur-sm rounded-xl p-4 border border-gray-200 dark:border-gray-700`}
                                 >
                                     <div className="flex items-center gap-3">
-                                        <div className="p-2 bg-gray-800/50 rounded-lg">
+                                        <div className="p-2 bg-light-card dark:bg-dark-card rounded-lg">
                                             {stat.icon}
                                         </div>
                                         <div>
                                             <div className="text-xl font-bold text-white">{stat.value}</div>
-                                            <div className="text-xs text-gray-300">{stat.label}</div>
+                                            <div className="text-xs text-gray-600 dark:text-gray-300">{stat.label}</div>
                                         </div>
                                     </div>
                                 </div>
@@ -197,7 +197,7 @@ const Footer = () => {
                     </div>
 
                     {/* Social Links & Copyright */}
-                    <div className="pt-8 border-t border-gray-800/50">
+                    <div className="pt-8 border-t border-gray-200 dark:border-gray-700">
                         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
                             {/* Social Links */}
                             <div className="flex items-center gap-4">
@@ -207,7 +207,7 @@ const Footer = () => {
                                         href={social.url}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className={`flex items-center gap-2 p-2 text-gray-400 ${social.color} transition-colors rounded-lg hover:bg-gray-800/30`}
+                                        className={`flex items-center gap-2 p-2 text-gray-600 dark:text-gray-400 ${social.color} transition-colors rounded-lg hover:bg-light-card dark:hover:bg-dark-card`}
                                         aria-label={`Follow us on ${social.platform}`}
                                     >
                                         {social.icon}
@@ -218,21 +218,21 @@ const Footer = () => {
                             </div>
 
                             {/* Made with Love */}
-                            <div className="flex items-center gap-2 text-sm text-gray-400">
+                            <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
                                 <span>Made with</span>
                                 <Heart size={14} className="text-red-400 fill-red-400 animate-pulse" />
                                 <span>by Deven Machchhar</span>
                             </div>
 
                             {/* Copyright */}
-                            <div className="flex items-center gap-2 text-sm text-gray-500">
+                            <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-500">
                                 <Award size={14} className="text-yellow-400" />
                                 <span>&copy; {currentYear} EventHub. All rights reserved.</span>
                             </div>
                         </div>
 
                         {/* Bottom Links */}
-                        <div className="mt-6 flex flex-wrap items-center justify-center gap-6 text-xs text-gray-500">
+                        <div className="mt-6 flex flex-wrap items-center justify-center gap-6 text-xs text-gray-600 dark:text-gray-500">
                             <a href="#" className="hover:text-blue-400 transition-colors">Privacy Policy</a>
                             <a href="#" className="hover:text-green-400 transition-colors">Terms of Service</a>
                             <a href="#" className="hover:text-yellow-400 transition-colors">Cookie Policy</a>
